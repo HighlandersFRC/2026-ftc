@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Constants {
 
@@ -12,6 +13,12 @@ public class Constants {
             public static final String FRONT_LEFT_NAME = "FrontLeftMotor";
             public static final String BACK_RIGHT_NAME = "BackRightMotor";
             public static final String BACK_LEFT_NAME = "BackLeftMotor";
+
+            public static class Tank {
+                public static final String LEFT_NAME = "left_motor";
+                public static final String RIGHT_NAME = "right_motor";
+
+            }
         }
 
         public static class Shooter {
