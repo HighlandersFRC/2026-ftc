@@ -20,7 +20,7 @@ public class Constants {
             public static final String LIMELIGHT_NAME_TAG_DETECTION = "limelight";
         }
         public static class Intake {
-            public static final String INTAKE_NAME = "IntakeMotor";
+            public static final String INTAKE_NAME = "intake_motor";
         }
 
         public static class Indexer {
