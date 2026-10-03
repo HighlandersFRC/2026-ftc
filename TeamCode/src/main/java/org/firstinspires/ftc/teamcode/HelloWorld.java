@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 
-public class HelloWord extends OpMode {
+public class HelloWorld extends OpMode {
 
     @Override
     public void init() {

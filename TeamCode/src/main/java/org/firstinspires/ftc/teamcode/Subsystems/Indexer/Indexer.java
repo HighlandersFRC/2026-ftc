@@ -21,7 +21,7 @@ public class Indexer extends Subsystem {
 
     public enum IndexerStates {
         DEFAULT,
-        IDLE,
+        IDLE, 
         INDEX
     }
 
