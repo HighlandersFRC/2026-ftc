@@ -29,7 +29,7 @@ public class Robot extends LinearOpMode {
         Superstructure superstructure = new Superstructure("System", intake, shooter, indexer, drive);
         superstructure.init(hardwareMap);
 
-
+        waitForStart();
         while(opModeIsActive()) {
             superstructure.periodic();
             superstructure.setWantedState(Superstates.DEFAULT);
