@@ -14,16 +14,16 @@ public class Drive extends Subsystem {
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
-    Limelight limelight;
+//    Limelight limelight;
     public Drive(String name, Peripherals peripherals, Limelight limelight) {
         super(name);
         this.peripherals = peripherals;
-        this.limelight = limelight;
+//        this.limelight = limelight;
     }
 
     public void init(HardwareMap hardwareMap) {
         peripherals.init(hardwareMap);
-        limelight.init(hardwareMap);
+//        limelight.init(hardwareMap);
         frontRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_RIGHT_NAME);
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
         backRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_RIGHT_NAME);
@@ -34,10 +34,10 @@ public class Drive extends Subsystem {
         double x = vector.getI();
         double y = vector.getJ();
 
-        double frontLeft  = y + x + turnValue;
-        double frontRight = y - x - turnValue;
-        double backLeft   = y - x + turnValue;
-        double backRight  = y + x - turnValue;
+        double frontLeft  = -y + x + turnValue;
+        double frontRight = y + x + turnValue;
+        double backLeft   = -y - x + turnValue;
+        double backRight  = -y + x - turnValue;
 
         double max = Math.max(
                 1.0,
@@ -82,14 +82,29 @@ public class Drive extends Subsystem {
 
     }
 
+//    public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
+//
+//        // updateOdometry(); // Disable temporarily
+//
+//        Vector translation = new Vector(
+//                oiLX,
+//                -oiLY
+//        );
+//
+//        double rotation = oiRX;
+//
+//        // Temporarily disable field-centric transformation
+//        setMotors(translation, rotation);
+//    }
+
     private void updateOdometry() {
         peripherals.updateMouse();
 
-        Pose2D cameraPose = limelight.getPose();
-
-        if (cameraPose != null) {
-            peripherals.fuseCameraOdometry(cameraPose);
-        }
+//        Pose2D cameraPose = limelight.getPose();
+//
+//        if (cameraPose != null) {
+//            peripherals.fuseCameraOdometry(cameraPose);
+//        }
     }
 
     public Pose2D getPose() {
