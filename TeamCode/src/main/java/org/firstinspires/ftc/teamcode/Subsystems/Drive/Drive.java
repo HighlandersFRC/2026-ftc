@@ -60,6 +60,10 @@ public class Drive extends Subsystem {
         backLeftMotor.setPower(backLeft);
         backRightMotor.setPower(backRight);
     }
+
+    public void stopMotors() {
+        setMotors(new Vector(0, 0), 0);
+    }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
         updateOdometry();
 
@@ -82,21 +86,6 @@ public class Drive extends Subsystem {
 
     }
 
-//    public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
-//
-//        // updateOdometry(); // Disable temporarily
-//
-//        Vector translation = new Vector(
-//                oiLX,
-//                -oiLY
-//        );
-//
-//        double rotation = oiRX;
-//
-//        // Temporarily disable field-centric transformation
-//        setMotors(translation, rotation);
-//    }
-
     private void updateOdometry() {
         peripherals.updateMouse();
 
@@ -105,6 +94,10 @@ public class Drive extends Subsystem {
 //        if (cameraPose != null) {
 //            peripherals.fuseCameraOdometry(cameraPose);
 //        }
+    }
+
+    public void resetOdometry(Pose2D newPose) {
+        peripherals.resetOdometry(newPose);
     }
 
     public Pose2D getPose() {

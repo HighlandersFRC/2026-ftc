@@ -30,7 +30,7 @@ public class TestDrive extends LinearOpMode {
 
 
             // Drive
-            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
+            drive.teleopFieldCentric(-gamepad1.right_stick_x, gamepad1.left_stick_x, -gamepad1.left_stick_y);
 
             if (gamepad1.options) peripherals.configureMouseSensor();
 

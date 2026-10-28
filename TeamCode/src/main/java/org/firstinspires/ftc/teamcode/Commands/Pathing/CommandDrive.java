@@ -33,7 +33,7 @@ public class CommandDrive implements Command {
 
     @Override
     public void end() {
-        drive.setMotors(new Vector(0, 0), 0);
+        drive.stopMotors();
     }
 
     @Override
