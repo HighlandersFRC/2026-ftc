@@ -23,7 +23,7 @@ public class ShooterTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             superstructure.periodic();
-            superstructure.setWantedState(Superstructure.Superstates.SHOOT);
+            superstructure.setWantedState(Superstructure.Superstates.MANUAL_SHOOT);
 
             double shooterRPM = shooter.getRPM();
             telemetry.addData("Shooter RPM", shooterRPM);
