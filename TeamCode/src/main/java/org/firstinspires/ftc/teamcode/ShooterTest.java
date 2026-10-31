@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.SHOOTER_RPM;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 
 @TeleOp
 public class ShooterTest extends LinearOpMode {
@@ -14,14 +17,15 @@ public class ShooterTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Drive drive = new Drive("Drive");
         Shooter shooter = new Shooter("Shooter", drive);
-        shooter.init(hardwareMap);
+        Superstructure superstructure = new Superstructure("System", null, shooter, null, drive);
+        superstructure.init(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
-            shooter.setRPM(2500);
+            shooter.setRPM(SHOOTER_RPM);
 
-            shooter.periodic();
-            shooter.setWantedState(Shooter.ShooterState.SHOOT);
+            superstructure.periodic();
+            superstructure.setWantedState(Superstructure.Superstates.SHOOT);
 
             double shooterRPM = shooter.getRPM();
             telemetry.addData("Shooter RPM", shooterRPM);

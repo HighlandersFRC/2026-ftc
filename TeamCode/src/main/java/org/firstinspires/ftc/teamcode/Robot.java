@@ -20,13 +20,13 @@ import org.firstinspires.ftc.teamcode.Subsystems.Superstructure.Superstates;
 public class Robot extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        //Peripherals peripherals = new Peripherals("Peripherals");
-        //Limelight limelight = new Limelight("Limelight");
+        Peripherals peripherals = new Peripherals("Peripherals");
+        Limelight limelight = new Limelight("Limelight");
         Drive drive = new Drive("Drive");
-        //Indexer indexer = new Indexer("Indexer");
+        Indexer indexer = new Indexer("Indexer");
         Intake intake = new Intake("Intake");
-        //Shooter shooter = new Shooter("Shooter", drive);
-        Superstructure superstructure = new Superstructure("System", intake);
+        Shooter shooter = new Shooter("Shooter", drive);
+        Superstructure superstructure = new Superstructure("System", intake, shooter, indexer, drive);
         superstructure.init(hardwareMap);
 
 
@@ -44,17 +44,16 @@ public class Robot extends LinearOpMode {
             if (gamepad1.left_bumper) superstructure.setWantedState(Superstates.OUTTAKE);
 
             // Drive
-            drive.teleopTankDrive(gamepad1.left_stick_y, gamepad1.right_stick_y);
-            //drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
+            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
 
-            /*if (gamepad1.options) peripherals.configureMouseSensor();
+            if (gamepad1.options) peripherals.configureMouseSensor();
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
             packet.put("Pose y", peripherals.getPose().getY(DistanceUnit.METER));
             packet.put("Pose heading", peripherals.getPose().getHeading(AngleUnit.RADIANS));
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-*/
+
         }
     }
 }
