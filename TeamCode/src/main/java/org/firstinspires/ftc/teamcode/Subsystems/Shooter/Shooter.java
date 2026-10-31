@@ -55,7 +55,6 @@ public class Shooter extends Subsystem {
     }
 
     private void updateShooter() {
-        setRPM(SHOOTER_RPM);
         VELOCITY_PID.updatePID(getRPM());
         shooterMotor.setPower(VELOCITY_PID.getResult());
     }
@@ -76,6 +75,7 @@ public class Shooter extends Subsystem {
                 //will be replaced with auto RPM later
                 break;
             case MANUAL_SHOOT:
+                setRPM(SHOOTER_RPM);
                 updateShooter();
                 break;
         }
