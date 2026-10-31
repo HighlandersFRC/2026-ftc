@@ -32,8 +32,6 @@ public class Drive extends Subsystem {
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
         backRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_RIGHT_NAME);
         backLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_LEFT_NAME);
-        Tank.leftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.Tank.LEFT_NAME);
-        Tank.rightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.Tank.RIGHT_NAME);
     }
 
     public void setMotors(Vector vector, double turnValue) {
@@ -100,7 +98,7 @@ public class Drive extends Subsystem {
         Tank.rightMotor.setPower(rightPower);
     }
 
-    /*private void updateOdometry() {
+    private void updateOdometry() {
         peripherals.updateMouse();
 
 //        Pose2D cameraPose = limelight.getPose();
@@ -118,8 +116,8 @@ public class Drive extends Subsystem {
         return peripherals.getPose();
     }
 
-    //@Override
-    //public void periodic() {
-        //updateOdometry();
-    //}
+    @Override
+    public void periodic() {
+        updateOdometry();
+    }
 }
