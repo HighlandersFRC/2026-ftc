@@ -44,9 +44,9 @@ public class Constants {
            public static final double SHOOTER_GEAR_RATIO = 1/1;
        }
        public static class Shooter {
-           private static final float SHOOTER_SPEED = 1;
-           public static final float SHOOTER_RPM = 2500;
-           private static final float FEED_FORWARD = SHOOTER_SPEED / SHOOTER_RPM ;
+           private static final double SHOOTER_SPEED = 1;
+           public static final double SHOOTER_RPM = 2500;
+           private static final double FEED_FORWARD = SHOOTER_SPEED / SHOOTER_RPM ;
            public static final PIDF VELOCITY_PID = new PIDF(1, 0, 0, FEED_FORWARD);
        }
     }

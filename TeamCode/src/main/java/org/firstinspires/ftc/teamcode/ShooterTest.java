@@ -22,8 +22,6 @@ public class ShooterTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            shooter.setRPM(SHOOTER_RPM);
-
             superstructure.periodic();
             superstructure.setWantedState(Superstructure.Superstates.SHOOT);
 
@@ -33,7 +31,7 @@ public class ShooterTest extends LinearOpMode {
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Shooter RPM", shooterRPM);
-            packet.put("Target RPM", 2500);
+            packet.put("Target RPM", SHOOTER_RPM);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
     }

@@ -17,7 +17,7 @@ public class Shooter extends Subsystem {
     private ShooterState wantedState = ShooterState.IDLE;
     private ShooterState systemState = ShooterState.IDLE;
     private Drive drive;
-    private float RPM;
+    private double RPM;
     public Shooter(String name, Drive drive) {
         super(name);
         this.drive = drive;
@@ -48,7 +48,7 @@ public class Shooter extends Subsystem {
         return 60*shooterRPS/SHOOTER_GEAR_RATIO;
     }
 
-    public void setRPM(float RPM) {
+    public void setRPM(double RPM) {
         this.RPM = RPM;
         VELOCITY_PID.setSetPoint(RPM);
     }
@@ -70,10 +70,11 @@ public class Shooter extends Subsystem {
             case IDLE:
                 break;
             case SHOOT:
-                updateShooter();
+                shooterMotor.setPower(1);
+                //will be replaced with auto RPM later
                 break;
             case MANUAL_SHOOT:
-                shooterMotor.setPower(1);
+                updateShooter();
                 break;
         }
     }

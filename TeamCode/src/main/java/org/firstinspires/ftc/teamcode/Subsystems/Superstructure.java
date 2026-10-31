@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.SHOOTER_RPM;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
@@ -39,7 +41,8 @@ public class Superstructure extends Subsystem{
         IDLE,
         INTAKE,
         OUTTAKE,
-        SHOOT
+        SHOOT,
+        MANUAL_SHOOT
     }
 
     @Override
@@ -49,7 +52,7 @@ public class Superstructure extends Subsystem{
         //drive.periodic();
         //indexer.periodic();
         intake.periodic();
-        //shooter.periodic();
+        shooter.periodic();
         switch (systemState) {
             case DEFAULT:
                 intake.setWantedState(Intake.IntakeStates.DEFAULT);
@@ -59,6 +62,7 @@ public class Superstructure extends Subsystem{
             case IDLE:
                 intake.setWantedState(Intake.IntakeStates.IDLE);
                 shooter.setWantedState(Shooter.ShooterState.IDLE);
+                indexer.setWantedState(Indexer.IndexerStates.IDLE);
                 break;
             case INTAKE:
                 intake.setWantedState(Intake.IntakeStates.INTAKE);
@@ -68,6 +72,11 @@ public class Superstructure extends Subsystem{
                 break;
             case SHOOT:
                 shooter.setWantedState(Shooter.ShooterState.SHOOT);
+                break;
+            case MANUAL_SHOOT:
+                shooter.setRPM(SHOOTER_RPM);
+                shooter.setWantedState(Shooter.ShooterState.MANUAL_SHOOT);
+                break;
         }
     }
 
