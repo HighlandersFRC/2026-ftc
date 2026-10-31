@@ -40,10 +40,10 @@ public class Drive extends Subsystem {
         double x = vector.getI();
         double y = vector.getJ();
 
-        double frontLeft  = y + x + turnValue;
-        double frontRight = y - x - turnValue;
-        double backLeft   = y - x + turnValue;
-        double backRight  = y + x - turnValue;
+        double frontLeft  = -y + x + turnValue;
+        double frontRight = y + x + turnValue;
+        double backLeft   = -y - x + turnValue;
+        double backRight  = -y + x - turnValue;
 
         double max = Math.max(
                 1.0,
@@ -65,6 +65,10 @@ public class Drive extends Subsystem {
         frontRightMotor.setPower(frontRight);
         backLeftMotor.setPower(backLeft);
         backRightMotor.setPower(backRight);
+    }
+
+    public void stopMotors() {
+        setMotors(new Vector(0, 0), 0);
     }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
         //updateOdometry();
@@ -99,12 +103,16 @@ public class Drive extends Subsystem {
     /*private void updateOdometry() {
         peripherals.updateMouse();
 
-        Pose2D cameraPose = limelight.getPose();
+//        Pose2D cameraPose = limelight.getPose();
+//
+//        if (cameraPose != null) {
+//            peripherals.fuseCameraOdometry(cameraPose);
+//        }
+    }
 
-        if (cameraPose != null) {
-            peripherals.fuseCameraOdometry(cameraPose);
-        }
-    }*/
+    public void resetOdometry(Pose2D newPose) {
+        peripherals.resetOdometry(newPose);
+    }
 
     public Pose2D getPose() {
         return peripherals.getPose();
