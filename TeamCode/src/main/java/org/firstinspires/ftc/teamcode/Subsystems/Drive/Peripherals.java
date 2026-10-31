@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystems.Drive;
 
+import static org.firstinspires.ftc.teamcode.Constants.Physical.IMU_NAME;
+
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -14,6 +18,7 @@ public class Peripherals extends Subsystem {
     private double fieldY;
     private double theta;
     SparkFunOTOS mouse;
+    IMU imu;
 
     public Peripherals(String name) {
         super(name);
@@ -28,6 +33,9 @@ public class Peripherals extends Subsystem {
         mouse.setLinearScalar(1.0);
         mouse.setAngularScalar(Constants.Physical.MOUSE_SENSOR_ANGULAR_SCALAR);
         configureMouseSensor();
+
+        imu = hardwareMap.get(IMU.class, IMU_NAME);
+        RevHubOrientationOnRobot HubOrientation = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
     }
 
     public void configureMouseSensor() {
@@ -123,6 +131,10 @@ public class Peripherals extends Subsystem {
 
     public double getYaw() {
         return theta;
+    }
+
+    public double getYawIMU() {
+        return imu.getRobotYawPitchRollAngles().getYaw();
     }
 
 }

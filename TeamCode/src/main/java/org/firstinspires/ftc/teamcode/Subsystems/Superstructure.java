@@ -10,25 +10,25 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
 
 public class Superstructure extends Subsystem{
-    //private final Intake intake;
+    private final Intake intake;
     private final Shooter shooter;
-    //private final Indexer indexer;
+    private final Indexer indexer;
     private final Drive drive;
     private Superstates wantedState = Superstates.IDLE;
     private Superstates systemState = Superstates.IDLE;
 
     public Superstructure (String name, Intake intake, Shooter shooter, Indexer indexer, Drive drive) {
         super(name);
-        //this.intake = intake;
+        this.intake = intake;
         this.shooter = shooter;
-        //this.indexer = indexer;
+        this.indexer = indexer;
         this.drive = drive;
     }
 
     public void init(HardwareMap hardwareMap) {
-        //intake.init(hardwareMap);
+        intake.init(hardwareMap);
         shooter.init(hardwareMap);
-        //indexer.init(hardwareMap);
+        indexer.init(hardwareMap);
     }
 
     public void setWantedState(Superstates state) {
@@ -41,6 +41,8 @@ public class Superstructure extends Subsystem{
         IDLE,
         INTAKE,
         OUTTAKE,
+        INDEX,
+        QUEUE,
         SHOOT,
         MANUAL_SHOOT
     }
@@ -50,25 +52,31 @@ public class Superstructure extends Subsystem{
         systemState = wantedState;
 
         //drive.periodic();
-        //indexer.periodic();
-        //intake.periodic();
+        indexer.periodic();
+        intake.periodic();
         shooter.periodic();
         switch (systemState) {
             case DEFAULT:
-                //intake.setWantedState(Intake.IntakeStates.DEFAULT);
+                intake.setWantedState(Intake.IntakeStates.DEFAULT);
                 shooter.setWantedState(Shooter.ShooterState.DEFAULT);
-                //indexer.setWantedState(Indexer.IndexerStates.DEFAULT);
+                indexer.setWantedState(Indexer.IndexerStates.DEFAULT);
                 break;
             case IDLE:
-                //intake.setWantedState(Intake.IntakeStates.IDLE);
+                intake.setWantedState(Intake.IntakeStates.IDLE);
                 shooter.setWantedState(Shooter.ShooterState.IDLE);
-                //indexer.setWantedState(Indexer.IndexerStates.IDLE);
+                indexer.setWantedState(Indexer.IndexerStates.IDLE);
                 break;
             case INTAKE:
-                //intake.setWantedState(Intake.IntakeStates.INTAKE);
+                intake.setWantedState(Intake.IntakeStates.INTAKE);
                 break;
             case OUTTAKE:
-                //intake.setWantedState(Intake.IntakeStates.OUTTAKE);
+                intake.setWantedState(Intake.IntakeStates.OUTTAKE);
+                break;
+            case INDEX:
+                indexer.setWantedState(Indexer.IndexerStates.INDEX);
+                break;
+            case QUEUE:
+                indexer.setWantedState(Indexer.IndexerStates.QUEUE);
                 break;
             case SHOOT:
                 shooter.setWantedState(Shooter.ShooterState.SHOOT);

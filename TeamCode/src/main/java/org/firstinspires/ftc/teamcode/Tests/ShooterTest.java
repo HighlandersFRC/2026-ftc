@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.SHOOTER_RPM;
 
@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 
@@ -15,7 +17,9 @@ import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 public class ShooterTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Drive drive = new Drive("Drive");
+        Peripherals peripherals = new Peripherals("peripherals");
+        Limelight limelight = new Limelight("limelight");
+        Drive drive = new Drive("Drive", peripherals, limelight);
         Shooter shooter = new Shooter("Shooter", drive);
         Superstructure superstructure = new Superstructure("System", null, shooter, null, drive);
         superstructure.init(hardwareMap);

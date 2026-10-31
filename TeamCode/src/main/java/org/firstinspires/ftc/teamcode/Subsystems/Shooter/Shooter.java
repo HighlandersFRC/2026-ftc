@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
+import static org.firstinspires.ftc.teamcode.Constants.InitInfo.Shooter.SHOOTER_NAME;
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_GEAR_RATIO;
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_TICKS_PER_REV;
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.SHOOTER_RPM;
@@ -29,7 +30,7 @@ public class Shooter extends Subsystem {
     }
 
     public void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.get(DcMotorEx.class, Constants.InitInfo.Shooter.SHOOTER_NAME);
+        shooterMotor = hardwareMap.get(DcMotorEx.class, SHOOTER_NAME);
     }
 
 

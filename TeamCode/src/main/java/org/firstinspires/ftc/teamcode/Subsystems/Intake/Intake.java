@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems.Intake;
 
+import static org.firstinspires.ftc.teamcode.Constants.InitInfo.Intake.INTAKE_NAME;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -16,7 +18,7 @@ public class Intake extends Subsystem {
         super(name);
     }
     public void init(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Intake.INTAKE_NAME);
+        intakeMotor = hardwareMap.get(DcMotor.class, INTAKE_NAME);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
@@ -44,10 +46,10 @@ public class Intake extends Subsystem {
             case IDLE:
                 break;
             case INTAKE:
-                intakeMotor.setPower(1);
+                intakeMotor.setPower(-1);
                 break;
             case OUTTAKE:
-                intakeMotor.setPower(-1);
+                intakeMotor.setPower(1);
                 break;
         }
     }

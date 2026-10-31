@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -10,11 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.Indexer;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
-import org.firstinspires.ftc.teamcode.Subsystems.Superstructure.Superstates;
 
 @TeleOp
 public class TestDrive extends LinearOpMode {
@@ -22,7 +17,7 @@ public class TestDrive extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("Limelight");
-        Drive drive = new Drive("Drive");
+        Drive drive = new Drive("Drive", peripherals, limelight);
         drive.init(hardwareMap);
 
         waitForStart();

@@ -20,7 +20,7 @@ public class LeaveAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("ll");
-        Drive drive = new Drive("drive");
+        Drive drive = new Drive("drive", peripherals, limelight);
         CommandScheduler scheduler = new CommandScheduler();
 
         drive.init(hardwareMap);

@@ -22,7 +22,7 @@ public class Robot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("Limelight");
-        Drive drive = new Drive("Drive");
+        Drive drive = new Drive("Drive", peripherals, limelight);
         Indexer indexer = new Indexer("Indexer");
         Intake intake = new Intake("Intake");
         Shooter shooter = new Shooter("Shooter", drive);
@@ -36,7 +36,7 @@ public class Robot extends LinearOpMode {
             superstructure.periodic();
             superstructure.setWantedState(Superstates.DEFAULT);
             // Shooter
-            if (gamepad1.right_trigger > 0) superstructure.setWantedState(Superstates.SHOOT);
+            if (gamepad1.right_trigger > 0) superstructure.setWantedState(Superstates.MANUAL_SHOOT);
 
             // Intake
             if (gamepad1.left_trigger > 0) superstructure.setWantedState(Superstates.INTAKE);
@@ -44,7 +44,7 @@ public class Robot extends LinearOpMode {
             if (gamepad1.left_bumper) superstructure.setWantedState(Superstates.OUTTAKE);
 
             // Drive
-            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
+            drive.teleopFieldCentric(-gamepad1.right_stick_x, gamepad1.left_stick_x, -gamepad1.left_stick_y);
 
             if (gamepad1.options) peripherals.configureMouseSensor();
 

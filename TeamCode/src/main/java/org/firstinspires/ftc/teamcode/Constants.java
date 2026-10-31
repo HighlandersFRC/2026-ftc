@@ -23,11 +23,12 @@ public class Constants {
             public static final String LIMELIGHT_NAME_TAG_DETECTION = "limelight";
         }
         public static class Intake {
-            public static final String INTAKE_NAME = "intake_motor";
+            public static final String INTAKE_NAME = "IntakeMotor";
         }
 
         public static class Indexer {
             public static final String INDEXER_NAME = "IndexerMotor";
+            public static final String QUEUER_NAME = "QueueMotor";
         }
 
     }
@@ -38,6 +39,7 @@ public class Constants {
        public static final SparkFunOTOS.Pose2D MOUSE_SENSOR_MOUNTED_POSE = new SparkFunOTOS.Pose2D(0.1524, -0.1016, 0);
        public static final double MOUSE_SENSOR_LINEAR_SCALAR = 1.525985719;
        public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 1.01530630663;
+       public static final String IMU_NAME = "imu";
 
        public static class Ratios {
            public static final double SHOOTER_TICKS_PER_REV = 28;

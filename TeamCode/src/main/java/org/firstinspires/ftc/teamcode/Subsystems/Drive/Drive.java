@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Tools.Vector;
 
 public class Drive extends Subsystem {
     Peripherals peripherals;
+    Limelight limelight;
     DcMotor frontRightMotor;
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
@@ -19,10 +20,10 @@ public class Drive extends Subsystem {
         public static DcMotor rightMotor;
     }
     //Limelight limelight;
-    public Drive(String name) {
+    public Drive(String name, Peripherals peripherals, Limelight limelight) {
         super(name);
-        //this.peripherals = peripherals;
-        //this.limelight = limelight;
+        this.peripherals = peripherals;
+        this.limelight = limelight;
     }
 
     public void init(HardwareMap hardwareMap) {
@@ -76,7 +77,7 @@ public class Drive extends Subsystem {
                 -oiLY * Constants.Physical.TOP_SPEED);
         double rotation = oiRX * Constants.Physical.MAX_ANGULAR_SPEED;
 
-        double yawRadians = Math.toRadians(peripherals.getYaw());
+        double yawRadians = Math.toRadians(peripherals.getYawIMU());
 
         double cos = Math.cos(yawRadians);
         double sin = Math.sin(yawRadians);
