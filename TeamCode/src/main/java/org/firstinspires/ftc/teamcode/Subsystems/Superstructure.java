@@ -74,7 +74,6 @@ public class Superstructure extends Subsystem{
                 shooter.setWantedState(Shooter.ShooterState.SHOOT);
                 break;
             case MANUAL_SHOOT:
-                shooter.setRPM(SHOOTER_RPM);
                 shooter.setWantedState(Shooter.ShooterState.MANUAL_SHOOT);
                 break;
         }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_GEAR_RATIO;
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.SHOOTER_RPM;
 import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.VELOCITY_PID;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,12 +49,13 @@ public class Shooter extends Subsystem {
         return 60*shooterRPS/SHOOTER_GEAR_RATIO;
     }
 
-    public void setRPM(double RPM) {
+    private void setRPM(double RPM) {
         this.RPM = RPM;
         VELOCITY_PID.setSetPoint(RPM);
     }
 
     private void updateShooter() {
+        setRPM(SHOOTER_RPM);
         VELOCITY_PID.updatePID(getRPM());
         shooterMotor.setPower(VELOCITY_PID.getResult());
     }
