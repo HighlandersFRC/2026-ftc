@@ -25,7 +25,7 @@ public class Peripherals extends Subsystem {
         mouse.setLinearUnit(DistanceUnit.METER);
         mouse.setAngularUnit(AngleUnit.DEGREES);
         mouse.setOffset(Constants.Physical.MOUSE_SENSOR_MOUNTED_POSE);
-        mouse.setLinearScalar(Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR);
+        mouse.setLinearScalar(1.0);
         mouse.setAngularScalar(Constants.Physical.MOUSE_SENSOR_ANGULAR_SCALAR);
         configureMouseSensor();
     }
@@ -47,7 +47,7 @@ public class Peripherals extends Subsystem {
     }
 
     public Pose2D getPose() {
-        return new Pose2D(DistanceUnit.METER, fieldX, fieldY, AngleUnit.DEGREES, theta);
+        return new Pose2D(DistanceUnit.METER, fieldX * Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR, fieldY * Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR, AngleUnit.DEGREES, theta);
     }
 
     public void fuseCameraOdometry(Pose2D cameraPose) {
@@ -114,11 +114,11 @@ public class Peripherals extends Subsystem {
     }
 
     public double getX() {
-        return fieldX;
+        return fieldX * Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR;
     }
 
     public double getY() {
-        return fieldY;
+        return fieldY * Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR;
     }
 
     public double getYaw() {

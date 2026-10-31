@@ -45,7 +45,7 @@ public class PurepursuitFollower implements Command {
     private static final double HEADING_SIGN = 1.0;
     private static final double EPS = 1e-9;
     private static final double SAME_POSITION_M = 1e-6;
-
+    
     private final String pathName;
     private final Drive drive;
     private PathPoint[] points;

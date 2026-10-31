@@ -40,7 +40,7 @@ public class Constants {
     }
 
     public static class Drive {
-        public static final double DISTANCE_TOLERANCE = 0.1;
+        public static final double DISTANCE_TOLERANCE = 0.01;
         public static final double ANGLE_TOLERANCE = 0.1;
         public static final int LIMELIGHT_OBJECT_DETECTION_PIPELINE = 1;
 
@@ -61,7 +61,7 @@ public class Constants {
             public static double KP_HEADING = 2.0;
             public static double KD_HEADING = 0.12;
 
-            public static double MAX_TRANSLATION_POWER = 0.45;
+            public static double MAX_TRANSLATION_POWER = 1.0;
             public static double MAX_TURN_POWER = 0.35;
             public static double MAX_WHEEL_POWER = 0.60;
 
