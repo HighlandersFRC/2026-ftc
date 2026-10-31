@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_GEAR_RATIO;
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Ratios.SHOOTER_TICKS_PER_REV;
+import static org.firstinspires.ftc.teamcode.Constants.Physical.Shooter.VELOCITY_PID;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
@@ -8,10 +13,11 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class Shooter extends Subsystem {
-    DcMotor shooterMotor;
+    DcMotorEx shooterMotor;
     private ShooterState wantedState = ShooterState.IDLE;
     private ShooterState systemState = ShooterState.IDLE;
     private Drive drive;
+    private double RPM;
     public Shooter(String name, Drive drive) {
         super(name);
         this.drive = drive;
@@ -22,7 +28,7 @@ public class Shooter extends Subsystem {
     }
 
     public void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.SHOOTER_NAME);
+        shooterMotor = hardwareMap.get(DcMotorEx.class, Constants.InitInfo.Shooter.SHOOTER_NAME);
     }
 
 
@@ -37,6 +43,16 @@ public class Shooter extends Subsystem {
         return true;
     }
 
+    public double getRPM() {
+        double shooterRPS = shooterMotor.getVelocity()/SHOOTER_TICKS_PER_REV;
+        return 60*shooterRPS/SHOOTER_GEAR_RATIO;
+    }
+
+    public void setRPM(double RPM) {
+        this.RPM = RPM;
+        VELOCITY_PID.setSetPoint(RPM);
+    }
+
 
     @Override
     public void periodic() {
@@ -49,7 +65,8 @@ public class Shooter extends Subsystem {
             case IDLE:
                 break;
             case SHOOT:
-                shooterMotor.setPower(1);
+                VELOCITY_PID.updatePID(getRPM());
+                shooterMotor.setPower(VELOCITY_PID.getResult());
                 break;
             case MANUAL_SHOOT:
                 shooterMotor.setPower(1);

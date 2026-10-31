@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Tools.PID;
+import org.firstinspires.ftc.teamcode.Tools.PIDF;
 
 public class Constants {
 
@@ -38,6 +38,17 @@ public class Constants {
        public static final SparkFunOTOS.Pose2D MOUSE_SENSOR_MOUNTED_POSE = new SparkFunOTOS.Pose2D(0.1524, -0.1016, 0);
        public static final double MOUSE_SENSOR_LINEAR_SCALAR = 1.525985719;
        public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 1.01530630663;
+
+       public static class Ratios {
+           public static final double SHOOTER_TICKS_PER_REV = 28;
+           public static final double SHOOTER_GEAR_RATIO = 1/1;
+       }
+       public static class Shooter {
+           private static final float MOTOR_SPEED = 1;
+           private static final float MOTOR_RPM = (float) -6000;
+           private static final float FEED_FORWARD = MOTOR_SPEED / MOTOR_RPM ;
+           public static final PIDF VELOCITY_PID = new PIDF(1, 0, 0, FEED_FORWARD);
+       }
     }
 
     public static class Drive {

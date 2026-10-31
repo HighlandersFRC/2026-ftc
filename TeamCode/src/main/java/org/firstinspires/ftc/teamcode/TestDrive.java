@@ -22,7 +22,7 @@ public class TestDrive extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("Limelight");
-        Drive drive = new Drive("Drive", peripherals, limelight);
+        Drive drive = new Drive("Drive");
         drive.init(hardwareMap);
 
         waitForStart();

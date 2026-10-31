@@ -21,7 +21,7 @@ public class TestPathing extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("ll");
-        Drive drive = new Drive("drive", peripherals, limelight);
+        Drive drive = new Drive("drive");
         CommandScheduler scheduler = new CommandScheduler();
         PurepursuitFollower path = new PurepursuitFollower("OneMeterX.polarpath", drive);
 
