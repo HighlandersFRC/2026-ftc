@@ -14,20 +14,26 @@ public class Drive extends Subsystem {
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
-//    Limelight limelight;
-    public Drive(String name, Peripherals peripherals, Limelight limelight) {
+    public static class Tank {
+        public static DcMotor leftMotor;
+        public static DcMotor rightMotor;
+    }
+    //Limelight limelight;
+    public Drive(String name) {
         super(name);
-        this.peripherals = peripherals;
-//        this.limelight = limelight;
+        //this.peripherals = peripherals;
+        //this.limelight = limelight;
     }
 
     public void init(HardwareMap hardwareMap) {
         peripherals.init(hardwareMap);
-//        limelight.init(hardwareMap);
+        //limelight.init(hardwareMap);
         frontRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_RIGHT_NAME);
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
         backRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_RIGHT_NAME);
         backLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_LEFT_NAME);
+        Tank.leftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.Tank.LEFT_NAME);
+        Tank.rightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.Tank.RIGHT_NAME);
     }
 
     public void setMotors(Vector vector, double turnValue) {
@@ -65,7 +71,7 @@ public class Drive extends Subsystem {
         setMotors(new Vector(0, 0), 0);
     }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
-        updateOdometry();
+        //updateOdometry();
 
         Vector translation = new Vector(
                 oiLX * Constants.Physical.TOP_SPEED,
@@ -86,7 +92,15 @@ public class Drive extends Subsystem {
 
     }
 
-    private void updateOdometry() {
+    public void teleopTankDrive(double oiLY, double oiRX) {
+        double leftPower = oiLY + oiRX;
+        double rightPower = oiRX - oiLY;
+
+        Tank.leftMotor.setPower(leftPower);
+        Tank.rightMotor.setPower(rightPower);
+    }
+
+    /*private void updateOdometry() {
         peripherals.updateMouse();
 
 //        Pose2D cameraPose = limelight.getPose();
@@ -104,8 +118,8 @@ public class Drive extends Subsystem {
         return peripherals.getPose();
     }
 
-    @Override
-    public void periodic() {
-        updateOdometry();
-    }
+    //@Override
+    //public void periodic() {
+        //updateOdometry();
+    //}
 }
