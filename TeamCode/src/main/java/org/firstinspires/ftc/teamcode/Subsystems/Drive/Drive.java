@@ -14,19 +14,18 @@ public class Drive extends Subsystem {
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
-    public static class Tank {
-        public static DcMotor leftMotor;
-        public static DcMotor rightMotor;
-    }
-    //Limelight limelight;
-    public Drive(String name) {
+
+    Limelight limelight;
+    public Drive(String name, Peripherals peripherals, Limelight limelight) {
         super(name);
-        //this.peripherals = peripherals;
-        //this.limelight = limelight;
+        this.peripherals = peripherals;
+        this.limelight = limelight;
     }
 
+
+
     public void init(HardwareMap hardwareMap) {
-        peripherals.init(hardwareMap);
+//        peripherals.init(hardwareMap);
         //limelight.init(hardwareMap);
         frontRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_RIGHT_NAME);
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
@@ -69,14 +68,13 @@ public class Drive extends Subsystem {
         setMotors(new Vector(0, 0), 0);
     }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
-        //updateOdometry();
-
         Vector translation = new Vector(
                 oiLX * Constants.Physical.TOP_SPEED,
                 -oiLY * Constants.Physical.TOP_SPEED);
         double rotation = oiRX * Constants.Physical.MAX_ANGULAR_SPEED;
 
-        double yawRadians = Math.toRadians(peripherals.getYaw());
+//        double yawRadians = Math.toRadians(peripherals.getYaw());
+        double yawRadians = 0.0;
 
         double cos = Math.cos(yawRadians);
         double sin = Math.sin(yawRadians);
@@ -89,15 +87,6 @@ public class Drive extends Subsystem {
         setMotors(robotVector, rotation);
 
     }
-
-    public void teleopTankDrive(double oiLY, double oiRX) {
-        double leftPower = oiLY + oiRX;
-        double rightPower = oiRX - oiLY;
-
-        Tank.leftMotor.setPower(leftPower);
-        Tank.rightMotor.setPower(rightPower);
-    }
-
     private void updateOdometry() {
         peripherals.updateMouse();
 

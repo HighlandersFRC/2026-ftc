@@ -63,4 +63,13 @@ public class Limelight extends Subsystem {
         return getResult(limelightTagDetection).getTx();
     }
 
+    // Object Detection
+
+    public double getPollenTy() {
+        return getResult(limelightObjectDetection).getTy();
+    }
+
+
+
+
 }

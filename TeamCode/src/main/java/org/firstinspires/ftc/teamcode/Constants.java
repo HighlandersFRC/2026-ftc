@@ -45,6 +45,12 @@ public class Constants {
         public static final double ANGLE_TOLERANCE = 0.1;
         public static final int LIMELIGHT_OBJECT_DETECTION_PIPELINE = 1;
 
+        public static final String[] OBJECTS = {
+            "Red", // Red Nectar
+            "Blue", // Blue Nectar
+            "Yellow" // Pollen
+        };
+
         public static class DrivePID {
             public static final PID xController = new PID(1.5, 0, 0); // Tune
             public static final PID yController = new PID(1.5, 0, 0); // Tune
@@ -81,6 +87,8 @@ public class Constants {
 
         }
     }
+
+
 
 
     private static double inchesToMeters(double inches) {
