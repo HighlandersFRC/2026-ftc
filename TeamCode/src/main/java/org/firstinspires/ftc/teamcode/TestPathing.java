@@ -1,41 +1,41 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.Pathing.PurePursuit.PurepursuitFollower;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
+import org.firstinspires.ftc.teamcode.Constants.InitInfo.Drive;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-@Autonomous(name = "Cosmos Path Picker", group = "Pathing")
+@Autonomous(name = "Cosmos Timed Path", group = "Pathing")
 public class TestPathing extends LinearOpMode {
+    private static final int FRONT_LEFT = 0;
+    private static final int BACK_LEFT = 1;
+    private static final int BACK_RIGHT = 2;
+    private static final int FRONT_RIGHT = 3;
+    private static final double TELEMETRY_INTERVAL_SECONDS = 0.1;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        Peripherals peripherals = new Peripherals("Peripherals");
-        Limelight limelight = new Limelight("ll");
-        Drive drive = new Drive("drive", peripherals, limelight);
-        CommandScheduler scheduler = new CommandScheduler();
-        PurepursuitFollower path = null;
-        boolean driveInitialized = false;
-
+        DcMotor[] motors = new DcMotor[4];
         try {
-            drive.init(hardwareMap);
-            driveInitialized = true;
-            List<String> pathFiles = listPathAssets();
+            motors[FRONT_LEFT] = hardwareMap.get(DcMotor.class, Drive.FRONT_LEFT_NAME);
+            motors[BACK_LEFT] = hardwareMap.get(DcMotor.class, Drive.BACK_LEFT_NAME);
+            motors[BACK_RIGHT] = hardwareMap.get(DcMotor.class, Drive.BACK_RIGHT_NAME);
+            motors[FRONT_RIGHT] = hardwareMap.get(DcMotor.class, Drive.FRONT_RIGHT_NAME);
+            for (DcMotor motor : motors) {
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                motor.setPower(0);
+            }
+
+            List<String> pathFiles = listTrajectoryAssets();
             if (pathFiles.isEmpty()) {
-                telemetry.addLine("No .traj or .polarpath assets found in paths/.");
+                telemetry.addLine("No Cosmos .traj assets found in paths/.");
                 telemetry.update();
                 return;
             }
@@ -44,7 +44,6 @@ public class TestPathing extends LinearOpMode {
             boolean leftWasPressed = false;
             boolean rightWasPressed = false;
             telemetry.setMsTransmissionInterval(100);
-
             while (opModeInInit()) {
                 if (gamepad1.dpad_left && !leftWasPressed) {
                     selectedIndex = (selectedIndex + pathFiles.size() - 1) % pathFiles.size();
@@ -55,78 +54,69 @@ public class TestPathing extends LinearOpMode {
                 leftWasPressed = gamepad1.dpad_left;
                 rightWasPressed = gamepad1.dpad_right;
 
-                drive.periodic();
-                Pose2D raw = drive.getPose();
                 telemetry.addData("Selected path", pathFiles.get(selectedIndex));
-                telemetry.addLine("D-pad left/right selects a path. Press START to run it.");
-                telemetry.addData("Raw sensor X (m)", raw.getX(DistanceUnit.METER));
-                telemetry.addData("Raw sensor Y (m)", raw.getY(DistanceUnit.METER));
-                telemetry.addData("Raw heading (deg)", raw.getHeading(AngleUnit.DEGREES));
+                telemetry.addLine("D-pad left/right selects. Press START to run the timed path.");
+                telemetry.addLine("Open-loop wheel power; no odometry or mouse sensor is used.");
                 telemetry.update();
                 sleep(20);
             }
             if (isStopRequested()) return;
 
-            path = new PurepursuitFollower(pathFiles.get(selectedIndex), drive);
-            if (!path.prepare()) {
-                telemetry.addData("Path load failed", path.getStatus());
+            String pathName = pathFiles.get(selectedIndex);
+            MecanumTrajectory trajectory;
+            try (InputStream input = hardwareMap.appContext.getAssets()
+                    .open("paths/" + pathName)) {
+                trajectory = MecanumTrajectory.load(input);
+            } catch (Exception e) {
+                telemetry.addData("Could not load " + pathName, e.getMessage());
                 telemetry.update();
                 return;
             }
 
-            scheduler.schedule(path);
-            long nextTelemetry = 0;
+            telemetry.addData("Running", pathName);
+            telemetry.addData("Duration", "%.2f s", trajectory.duration());
+            telemetry.update();
+
+            long startNanos = System.nanoTime();
+            long nextTelemetryNanos = startNanos;
             while (opModeIsActive()) {
-                drive.periodic();
-                scheduler.run();
+                double elapsedSeconds = (System.nanoTime() - startNanos) / 1e9;
+                if (elapsedSeconds >= trajectory.duration()) break;
+
+                MecanumTrajectory.State target = trajectory.sample(elapsedSeconds);
+                double[] wheelSpeeds = trajectory.wheelSpeeds(target);
+                double[] powers = normalizePowers(
+                        wheelSpeeds,
+                        trajectory.maxWheelSpeedMetersPerSecond());
+                for (int i = 0; i < motors.length; i++) {
+                    motors[i].setPower(powers[i]);
+                }
 
                 long now = System.nanoTime();
-                if (now >= nextTelemetry) {
-                    nextTelemetry = now + 100_000_000L;
-                    TelemetryPacket packet = new TelemetryPacket();
-                    packet.put("Follower/status", path.getStatus());
-                    packet.put("Follower/success", path.isSuccessful());
-                    packet.put("Follower/current X (m)", path.getCurrentX());
-                    packet.put("Follower/current Y (m)", path.getCurrentY());
-                    packet.put("Follower/target X (m)", path.getTargetX());
-                    packet.put("Follower/target Y (m)", path.getTargetY());
-                    packet.put("Follower/position error (m)", path.getPositionError());
-                    packet.put("Follower/heading error (deg)", Math.toDegrees(path.getHeadingError()));
-                    packet.put("Follower/robot X power", path.getRobotXPower());
-                    packet.put("Follower/robot Y power", path.getRobotYPower());
-                    packet.put("Follower/CCW turn power", path.getTurnPower());
-
-                    packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
-                    packet.put("Pose y", peripherals.getPose().getY(DistanceUnit.METER));
-                    packet.put("Pose heading", peripherals.getPose().getHeading(AngleUnit.RADIANS));
-                    FtcDashboard.getInstance().sendTelemetryPacket(packet);
-
-                    telemetry.addData("Path", path.getStatus());
-                    telemetry.addData("Successful", path.isSuccessful());
-                    telemetry.addData("Position error", "%.3f m", path.getPositionError());
-                    telemetry.addData("Heading error", "%.1f deg", Math.toDegrees(path.getHeadingError()));
+                if (now >= nextTelemetryNanos) {
+                    nextTelemetryNanos = now + (long) (TELEMETRY_INTERVAL_SECONDS * 1e9);
+                    telemetry.addData("Path", pathName);
+                    telemetry.addData("Time", "%.2f / %.2f s", elapsedSeconds, trajectory.duration());
+                    telemetry.addData("Wheel power FL BL BR FR", "%.2f %.2f %.2f %.2f",
+                            powers[FRONT_LEFT], powers[BACK_LEFT], powers[BACK_RIGHT], powers[FRONT_RIGHT]);
                     telemetry.update();
                 }
-                if (path.isFinished()) break;
-                sleep(10);
+                idle();
             }
         } finally {
-            if (path != null) path.end();
-            else if (driveInitialized) drive.stopMotors();
+            for (DcMotor motor : motors) {
+                if (motor != null) motor.setPower(0);
+            }
         }
     }
 
-    private List<String> listPathAssets() {
+    private List<String> listTrajectoryAssets() {
         List<String> paths = new ArrayList<>();
         try {
             String[] assets = hardwareMap.appContext.getAssets().list("paths");
             if (assets != null) {
                 for (String name : assets) {
-                    String lower = name.toLowerCase(Locale.ROOT);
-                    if (lower.endsWith(".traj") || lower.endsWith(".polarpath")
-                            || lower.endsWith(".polarpaths")) {
-                        paths.add(name);
-                    }
+                    if (name.toLowerCase(Locale.ROOT).endsWith(".traj")) paths.add(name);
                 }
             }
         } catch (Exception e) {
@@ -141,5 +131,16 @@ public class TestPathing extends LinearOpMode {
             if (paths.get(i).equalsIgnoreCase("MecanumSmoke.traj")) return i;
         }
         return 0;
+    }
+
+    private double[] normalizePowers(double[] wheelSpeeds, double maxWheelSpeed) {
+        double[] powers = new double[wheelSpeeds.length];
+        double largestMagnitude = 1.0;
+        for (int i = 0; i < wheelSpeeds.length; i++) {
+            powers[i] = wheelSpeeds[i] / maxWheelSpeed;
+            largestMagnitude = Math.max(largestMagnitude, Math.abs(powers[i]));
+        }
+        for (int i = 0; i < powers.length; i++) powers[i] /= largestMagnitude;
+        return powers;
     }
 }

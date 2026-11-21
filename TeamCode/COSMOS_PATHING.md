@@ -4,13 +4,12 @@ Open the Cosmos project saved at `TeamCode/src/main/assets/paths/cosmospathing.c
 
 ## Generate and run a path
 
-1. Open `cosmospathing.chor` in the Cosmos desktop app.
-2. Generate and save the path. Its `.traj` file will appear in `TeamCode/src/main/assets/paths/`.
-3. In VS Code, run **FTC: Install on connected Robot Controller** to rebuild and install the updated app.
-4. On the Driver Station, select **Cosmos Path Picker**. During INIT, use the gamepad D-pad left/right to choose any `.traj` or `.polarpath` asset, then press START.
+1. Generate and save the path in Cosmos. Its `.traj` file appears in `TeamCode/src/main/assets/paths/`.
+2. In VS Code, run **FTC: Install on connected Robot Controller** to rebuild and install the updated app.
+3. On the Driver Station, select **Cosmos Timed Path**. During INIT, use the gamepad D-pad left/right to choose a `.traj`, then press START.
 
-The picker lists paths packaged in the installed app. Generating a path writes it into the project immediately; rebuilding and installing is still needed before the Control Hub receives the new asset.
+The picker lists paths packaged in the installed app. New paths are written into the project immediately; the Hub receives them after the next build and install. To share a generated path with teammates, commit and push its `.traj` file on the `FTCshenanigans` branch.
 
-## FTC path loading
+## How the timed follower works
 
-`PurepursuitFollower` reads Cosmos exports when `trajectory.sampleType` is `Mecanum`. It uses each sample's SI `x`, `y`, and `heading` values with the existing feedback follower. It does not use Cosmos timing or wheel-speed feedforward. The older `.polarpath` format remains supported.
+`MecanumTrajectory` reads the generated sample time, field velocity and heading, plus the wheel geometry and speed limits stored in the Cosmos trajectory. `TestPathing` converts those values to front-left, back-left, back-right and front-right motor powers and applies them against elapsed time. It does not use odometry, a mouse sensor, or feedback correction, so the robot follows the planned timing open-loop and can drift if the real motion differs from the generated path.
