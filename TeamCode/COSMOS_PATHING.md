@@ -1,14 +1,16 @@
-# Cosmos pathing for FTC
+# Cosmos paths in FTC
 
-The `TeamCode` folder on this branch comes from the `ObjectDetection` branch. It includes the mecanum drive, odometry, and existing Pure Pursuit follower. The Cosmos export `src/main/assets/paths/MecanumSmoke.traj` is synchronized from the open Cosmos project.
+Open the Cosmos project saved at `TeamCode/src/main/assets/paths/cosmospathing.chor`. Keep this project there. Cosmos writes each generated `.traj` beside the `.chor`, so new trajectories go directly into the FTC Android assets folder without a copy step.
 
-`TestPathing` loads `MecanumSmoke.traj` directly. The follower accepts Cosmos JSON under `trajectory.samples` when `trajectory.sampleType` is `Mecanum`, and reads `x`, `y`, and `heading` from each sample. It continues to support the older `sampled_points` / `.polarpath` files too.
+## Generate and run a path
 
-## Generate and sync another Cosmos path
+1. Open `cosmospathing.chor` in the Cosmos desktop app.
+2. Generate and save the path. Its `.traj` file will appear in `TeamCode/src/main/assets/paths/`.
+3. In VS Code, run **FTC: Install on connected Robot Controller** to rebuild and install the updated app.
+4. On the Driver Station, select **Cosmos Path Picker**. During INIT, use the gamepad D-pad left/right to choose any `.traj` or `.polarpath` asset, then press START.
 
-1. In Cosmos, generate and save the path so the `.traj` export is written beside the `.chor` project.
-2. Copy the generated `.traj` into `TeamCode/src/main/assets/paths/`.
-3. Update the filename in `TestPathing` to match the exported file.
-4. Build and install the Robot Controller app from VS Code.
+The picker lists paths packaged in the installed app. Generating a path writes it into the project immediately; rebuilding and installing is still needed before the Control Hub receives the new asset.
 
-Cosmos exports SI coordinates with its lower-left field origin and counterclockwise headings. The existing FTC follower resets odometry to the path's first point and uses its own feedback controller; this integration reads the Cosmos path geometry and heading samples, not Cosmos time-based wheel feedforward.
+## FTC path loading
+
+`PurepursuitFollower` reads Cosmos exports when `trajectory.sampleType` is `Mecanum`. It uses each sample's SI `x`, `y`, and `heading` values with the existing feedback follower. It does not use Cosmos timing or wheel-speed feedforward. The older `.polarpath` format remains supported.
