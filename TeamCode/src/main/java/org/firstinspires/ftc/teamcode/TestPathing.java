@@ -35,7 +35,7 @@ public class TestPathing extends LinearOpMode {
             driveInitialized = true;
             List<String> pathFiles = listPathAssets();
             if (pathFiles.isEmpty()) {
-                telemetry.addLine("No .traj or .polarpath assets found in paths/.");
+                telemetry.addLine("No Cosmos .traj assets found in paths/.");
                 telemetry.update();
                 return;
             }
@@ -123,10 +123,7 @@ public class TestPathing extends LinearOpMode {
             if (assets != null) {
                 for (String name : assets) {
                     String lower = name.toLowerCase(Locale.ROOT);
-                    if (lower.endsWith(".traj") || lower.endsWith(".polarpath")
-                            || lower.endsWith(".polarpaths")) {
-                        paths.add(name);
-                    }
+                    if (lower.endsWith(".traj")) paths.add(name);
                 }
             }
         } catch (Exception e) {

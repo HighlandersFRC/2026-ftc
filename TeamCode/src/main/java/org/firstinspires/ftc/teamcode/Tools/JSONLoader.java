@@ -31,7 +31,7 @@ public class JSONLoader {
                     StandardCharsets.UTF_8
             );
 
-            // Parse .polarpath exactly like JSON
+            // Cosmos .traj exports are JSON documents.
             json = new JSONObject(content);
 
         } catch (Exception e) {

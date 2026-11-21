@@ -13,12 +13,12 @@ import org.firstinspires.ftc.teamcode.Tools.Vector;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import static org.firstinspires.ftc.teamcode.Commands.Pathing.Follower.KD_X;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.CURVE_SLOWDOWN_M;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.HEADING_PAUSE_RAD;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.HEADING_SLOW_RAD;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.HEADING_TOLERANCE_RAD;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.KD_HEADING;
+import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.KD_X;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.KD_Y;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.KP_HEADING;
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.KP_X;
@@ -89,9 +89,11 @@ public class PurepursuitFollower implements Command {
             throw new IllegalArgumentException("Path name is empty");
         }
         name = name.trim();
-        if (!name.endsWith(".polarpath") && !name.endsWith(".polarpaths")
-                && !name.endsWith(".json") && !name.endsWith(".traj")) {
-            name += ".polarpath";
+        if (!name.toLowerCase(java.util.Locale.ROOT).endsWith(".traj")) {
+            if (name.contains(".")) {
+                throw new IllegalArgumentException("Cosmos paths must use the .traj format");
+            }
+            name += ".traj";
         }
         return new JSONLoader(AppUtil.getDefContext(), name).getJSON();
     }
@@ -102,20 +104,14 @@ public class PurepursuitFollower implements Command {
         successful = false;
         try {
             JSONObject path = loadPath(pathName);
-            JSONArray input = path.optJSONArray("sampled_points");
-            if (input == null) {
-                JSONObject trajectory = path.optJSONObject("trajectory");
-                if (trajectory == null || !"Mecanum".equals(trajectory.optString("sampleType"))) {
-                    throw new IllegalArgumentException(
-                            "Expected sampled_points or a Cosmos Mecanum trajectory");
-                }
-                input = trajectory.optJSONArray("samples");
-                if (input == null) {
-                    throw new IllegalArgumentException("Cosmos trajectory samples are missing");
-                }
+            JSONObject trajectory = path.optJSONObject("trajectory");
+            if (trajectory == null || !"Mecanum".equals(trajectory.optString("sampleType"))) {
+                throw new IllegalArgumentException("Expected a Cosmos Mecanum trajectory");
             }
+            JSONArray input = trajectory.optJSONArray("samples");
+            if (input == null) throw new IllegalArgumentException("Cosmos trajectory samples are missing");
             if (input.length() == 0) {
-                throw new IllegalArgumentException("sampled_points is empty");
+                throw new IllegalArgumentException("Cosmos trajectory samples are empty");
             }
             ArrayList<PathPoint> loaded = new ArrayList<>();
             double distance = 0;
