@@ -25,7 +25,7 @@ public class Drive extends Subsystem {
 
 
     public void init(HardwareMap hardwareMap) {
-//        peripherals.init(hardwareMap);
+        peripherals.init(hardwareMap);
         //limelight.init(hardwareMap);
         frontRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_RIGHT_NAME);
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
@@ -73,8 +73,8 @@ public class Drive extends Subsystem {
                 -oiLY * Constants.Physical.TOP_SPEED);
         double rotation = oiRX * Constants.Physical.MAX_ANGULAR_SPEED;
 
-//        double yawRadians = Math.toRadians(peripherals.getYaw());
-        double yawRadians = 0.0;
+        double yawRadians = Math.toRadians(peripherals.getYaw());
+//        double yawRadians = 0.0;
 
         double cos = Math.cos(yawRadians);
         double sin = Math.sin(yawRadians);

@@ -31,12 +31,12 @@ public class TestDrive extends LinearOpMode {
             // Drive
             drive.teleopFieldCentric(-gamepad1.right_stick_x, gamepad1.left_stick_x, -gamepad1.left_stick_y);
 
-//            if (gamepad1.options) peripherals.configureMouseSensor();
+            if (gamepad1.options) peripherals.configureMouseSensor();
 
             TelemetryPacket packet = new TelemetryPacket();
-//            packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
-//            packet.put("Pose y", peripherals.getPose().getY(DistanceUnit.METER));
-//            packet.put("Pose heading", peripherals.getPose().getHeading(AngleUnit.RADIANS));
+            packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
+            packet.put("Pose y", peripherals.getPose().getY(DistanceUnit.METER));
+            packet.put("Pose heading", peripherals.getPose().getHeading(AngleUnit.RADIANS));
 
             packet.put("RX", gamepad1.right_stick_x);
             packet.put("LX", gamepad1.left_stick_x);

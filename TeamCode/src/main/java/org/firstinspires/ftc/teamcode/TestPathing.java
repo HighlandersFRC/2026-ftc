@@ -23,7 +23,7 @@ public class TestPathing extends LinearOpMode {
         Limelight limelight = new Limelight("ll");
         Drive drive = new Drive("drive", peripherals, limelight);
         CommandScheduler scheduler = new CommandScheduler();
-        PurepursuitFollower path = new PurepursuitFollower("TestPath.polarpath", drive);
+        PurepursuitFollower path = new PurepursuitFollower("OneMeter.polarpath", drive);
 
         try {
             drive.init(hardwareMap);
@@ -63,6 +63,10 @@ public class TestPathing extends LinearOpMode {
                     packet.put("Follower/robot X power", path.getRobotXPower());
                     packet.put("Follower/robot Y power", path.getRobotYPower());
                     packet.put("Follower/CCW turn power", path.getTurnPower());
+
+                    packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
+                    packet.put("Pose y", peripherals.getPose().getY(DistanceUnit.METER));
+                    packet.put("Pose heading", peripherals.getPose().getHeading(AngleUnit.RADIANS));
                     FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
                     telemetry.addData("Path", path.getStatus());

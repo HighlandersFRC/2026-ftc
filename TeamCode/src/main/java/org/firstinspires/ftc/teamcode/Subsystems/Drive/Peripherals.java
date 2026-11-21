@@ -36,7 +36,11 @@ public class Peripherals extends Subsystem {
     }
 
     public void resetOdometry(Pose2D newPose) {
-        mouse.setPosition(new SparkFunOTOS.Pose2D(newPose.getX(DistanceUnit.METER), newPose.getY(DistanceUnit.METER), newPose.getHeading(AngleUnit.DEGREES)));
+        double linearScalar = Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR;
+        mouse.setPosition(new SparkFunOTOS.Pose2D(
+                newPose.getX(DistanceUnit.METER) / linearScalar,
+                newPose.getY(DistanceUnit.METER) / linearScalar,
+                newPose.getHeading(AngleUnit.DEGREES)));
     }
 
     public void updateMouse() {
@@ -55,8 +59,9 @@ public class Peripherals extends Subsystem {
 
         SparkFunOTOS.Pose2D otosPose = mouse.getPosition();
 
-        double otosX = otosPose.x;
-        double otosY = otosPose.y;
+        double linearScalar = Constants.Physical.MOUSE_SENSOR_LINEAR_SCALAR;
+        double otosX = otosPose.x * linearScalar;
+        double otosY = otosPose.y * linearScalar;
         double otosHeading = otosPose.h;
 
         double cameraX = cameraPose.getX(DistanceUnit.METER);
@@ -90,14 +95,14 @@ public class Peripherals extends Subsystem {
 
         mouse.setPosition(
                 new SparkFunOTOS.Pose2D(
-                        fusedX,
-                        fusedY,
+                        fusedX / linearScalar,
+                        fusedY / linearScalar,
                         fusedHeading
                 )
         );
 
-        fieldX = fusedX;
-        fieldY = fusedY;
+        fieldX = fusedX / linearScalar;
+        fieldY = fusedY / linearScalar;
         theta = fusedHeading;
     }
 
