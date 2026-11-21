@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "FTC: Build Robot Controller APK",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": [":TeamCode:assembleDebug"],
+      "options": {
+        "env": {
+          "JAVA_HOME": "${env:ProgramFiles}\\Android\\Android Studio\\jbr",
+          "ANDROID_HOME": "${env:LOCALAPPDATA}\\Android\\Sdk"
+        }
+      },
+      "group": "build",
+      "problemMatcher": ["$gradle"]
+    },
+    {
+      "label": "FTC: Install on connected Robot Controller",
+      "type": "shell",
+      "command": "${workspaceFolder}\\gradlew.bat",
+      "args": [":TeamCode:installDebug"],
+      "options": {
+        "env": {
+          "JAVA_HOME": "${env:ProgramFiles}\\Android\\Android Studio\\jbr",
+          "ANDROID_HOME": "${env:LOCALAPPDATA}\\Android\\Sdk"
+        }
+      },
+      "problemMatcher": ["$gradle"]
+    }
+  ]
+}

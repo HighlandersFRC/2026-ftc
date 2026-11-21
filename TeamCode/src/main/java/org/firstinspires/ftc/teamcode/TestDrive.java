@@ -26,12 +26,16 @@ public class TestDrive extends LinearOpMode {
         drive.init(hardwareMap);
 
         waitForStart();
+        boolean optionsWasPressed = false;
         while(opModeIsActive()) {
+            drive.periodic();
 
             // Drive
-            drive.teleopFieldCentric(-gamepad1.right_stick_x, gamepad1.left_stick_x, -gamepad1.left_stick_y);
+            drive.teleopFieldCentric(gamepad1.right_stick_x, -gamepad1.left_stick_x, -gamepad1.left_stick_y);
 
-            if (gamepad1.options) peripherals.configureMouseSensor();
+            boolean optionsPressed = gamepad1.options;
+            if (optionsPressed && !optionsWasPressed) peripherals.configureMouseSensor();
+            optionsWasPressed = optionsPressed;
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));

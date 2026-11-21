@@ -23,7 +23,7 @@ public class TestPathing extends LinearOpMode {
         Limelight limelight = new Limelight("ll");
         Drive drive = new Drive("drive", peripherals, limelight);
         CommandScheduler scheduler = new CommandScheduler();
-        PurepursuitFollower path = new PurepursuitFollower("OneMeter.polarpath", drive);
+        PurepursuitFollower path = new PurepursuitFollower("Leave.polarpath", drive);
 
         try {
             drive.init(hardwareMap);

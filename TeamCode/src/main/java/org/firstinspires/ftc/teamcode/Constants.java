@@ -18,8 +18,8 @@ public class Constants {
         }
 
         public static class Shooter {
-            public static final String SHOOTER_NAME = "ShooterMotor";
-            public static final String HOOD_NAME = "HoodServo";
+            public static final String SHOOTER_NAME = "shooter_motor";
+            public static final String HOOD_NAME = "hood_servo";
             public static final String LIMELIGHT_NAME_TAG_DETECTION = "limelight";
         }
         public static class Intake {
@@ -27,7 +27,7 @@ public class Constants {
         }
 
         public static class Indexer {
-            public static final String INDEXER_NAME = "IndexerMotor";
+            public static final String INDEXER_NAME = "indexer_motor";
         }
 
     }
@@ -35,9 +35,10 @@ public class Constants {
     public static class Physical {
         public static final double TOP_SPEED = 1;
         public static final double MAX_ANGULAR_SPEED = -1;
-       public static final SparkFunOTOS.Pose2D MOUSE_SENSOR_MOUNTED_POSE = new SparkFunOTOS.Pose2D(0.1524, -0.1016, 0);
-       public static final double MOUSE_SENSOR_LINEAR_SCALAR = 1.525985719;
-       public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 1.01530630663;
+       // OTOS uses a negative offset for clockwise rotation; this sensor is mounted 90 degrees clockwise from the front of the robot.
+       public static final SparkFunOTOS.Pose2D MOUSE_SENSOR_MOUNTED_POSE = new SparkFunOTOS.Pose2D(-0.2159, 0.1016, -90);
+       public static final double MOUSE_SENSOR_LINEAR_SCALAR = 1.0;
+       public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 1.0;
     }
 
     public static class Drive {
@@ -58,6 +59,8 @@ public class Constants {
         }
 
         public static class PurePursuit {
+            public static boolean RESET_ODOMETRY_ON_START = true; // Just to get the Mouse Sensor on the same page as the path
+
             public static double LOOKAHEAD_M = 0.20;
             public static double PROJECTION_WINDOW_M = 0.35;
 
@@ -83,8 +86,6 @@ public class Constants {
             public static double SETTLE_SECONDS = 0.20;
             public static double VELOCITY_FILTER_SECONDS = 0.06;
             public static double TIMEOUT_SECONDS = 30.0;
-            public static boolean RESET_ODOMETRY_ON_START = true;
-
         }
     }
 

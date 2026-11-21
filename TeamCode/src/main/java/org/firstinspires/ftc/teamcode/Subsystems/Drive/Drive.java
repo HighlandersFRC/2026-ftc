@@ -37,8 +37,8 @@ public class Drive extends Subsystem {
         double x = vector.getI();
         double y = vector.getJ();
 
-        double frontLeft  = -y + x + turnValue;
-        double frontRight = y + x + turnValue;
+        double frontLeft  = y - x - turnValue;
+        double frontRight = -y - x - turnValue;
         double backLeft   = -y - x + turnValue;
         double backRight  = -y + x - turnValue;
 
@@ -79,8 +79,10 @@ public class Drive extends Subsystem {
         double cos = Math.cos(yawRadians);
         double sin = Math.sin(yawRadians);
 
-        double x = translation.getI() * cos - translation.getJ() * sin;
-        double y = translation.getI() * sin + translation.getJ() * cos;
+        // Convert the field-relative joystick vector into robot coordinates by
+        // rotating it opposite the robot's heading.
+        double x = translation.getI() * cos + translation.getJ() * sin;
+        double y = -translation.getI() * sin + translation.getJ() * cos;
 
         Vector robotVector = new Vector(x, y);
 
