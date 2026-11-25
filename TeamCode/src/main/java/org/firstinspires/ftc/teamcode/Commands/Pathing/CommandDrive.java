@@ -23,7 +23,7 @@ public class CommandDrive implements Command {
     }
     @Override
     public void start() {
-        drive.setMotors(new Vector(x, y), turnValue);
+        drive.setMotors(new Vector(x, y), turnValue, Math.toRadians(peripherals.getYaw()));
     }
 
     @Override

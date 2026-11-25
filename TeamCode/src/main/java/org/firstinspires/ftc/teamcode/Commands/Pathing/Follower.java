@@ -270,14 +270,14 @@ public class Follower implements Command {
             lastRobotX = robotX;
             lastRobotY = robotY;
             lastTurn = turn;
-            sendRobotPower(robotX, robotY, turn);
+            sendRobotPower(robotX, robotY, turn, Math.toRadians(currentHeading));
         } catch (Exception e) {
             fail("Execution error: " + e.getMessage());
         }
     }
 
-    private void sendRobotPower(double robotX, double robotY, double ccwPower) {
-        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower);
+    private void sendRobotPower(double robotX, double robotY, double ccwPower, double currentYaw) {
+        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower, currentYaw);
     }
 
     private void updateVelocity(double dt) {

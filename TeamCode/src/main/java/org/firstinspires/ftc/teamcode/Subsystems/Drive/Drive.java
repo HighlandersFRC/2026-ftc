@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
@@ -33,9 +35,12 @@ public class Drive extends Subsystem {
         backLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_LEFT_NAME);
     }
 
-    public void setMotors(Vector vector, double turnValue) {
-        double x = vector.getI();
-        double y = vector.getJ();
+    public void setMotors(Vector vector, double turnValue, double yawRadians) {
+        double cos = Math.cos(yawRadians);
+        double sin = Math.sin(yawRadians);
+
+        double x = vector.getI() * cos + vector.getJ() * sin;
+        double y = -vector.getI() * sin + vector.getJ() * cos;
 
         double frontLeft  = -y + x - turnValue;
         double frontRight = y + x - turnValue;
@@ -65,7 +70,7 @@ public class Drive extends Subsystem {
     }
 
     public void stopMotors() {
-        setMotors(new Vector(0, 0), 0);
+        setMotors(new Vector(0, 0), 0, 0);
     }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
         Vector translation = new Vector(
@@ -73,22 +78,32 @@ public class Drive extends Subsystem {
                 -oiLY * Constants.Physical.TOP_SPEED);
         double rotation = oiRX * Constants.Physical.MAX_ANGULAR_SPEED;
 
-        double yawRadians = Math.toRadians(peripherals.getYaw());
-//        double yawRadians = 0.0;
-
-        double cos = Math.cos(yawRadians);
-        double sin = Math.sin(yawRadians);
-
-        // Convert the field-relative joystick vector into robot coordinates by
-        // rotating it opposite the robot's heading.
-        double x = translation.getI() * cos + translation.getJ() * sin;
-        double y = -translation.getI() * sin + translation.getJ() * cos;
-
-        Vector robotVector = new Vector(x, y);
-
-        setMotors(robotVector, rotation);
-
+        setMotors(translation, rotation, Math.toRadians(peripherals.getYaw()));
     }
+
+    private void autoTarget(Pose2D targetPose) {
+        Pose2D currentPose = getPose();
+
+        double xPower = Constants.Drive.DrivePID.xController.calculate(currentPose.getX(DistanceUnit.METER), targetPose.getX(DistanceUnit.METER));
+        double yPower = Constants.Drive.DrivePID.yController.calculate(currentPose.getY(DistanceUnit.METER), targetPose.getY(DistanceUnit.METER));
+        double headingPower = Constants.Drive.DrivePID.headingController.calculate(currentPose.getHeading(AngleUnit.RADIANS), targetPose.getHeading(AngleUnit.RADIANS));
+
+        Vector translation = new Vector(xPower, yPower);
+
+        setMotors(translation, headingPower, currentPose.getHeading(AngleUnit.RADIANS));
+    }
+
+    public void autoAlign(boolean isRed) {
+        Pose2D currentPose = getPose();
+
+
+        if (Constants.Field.TARGET_TOP_HIVE(currentPose)) {
+            autoTarget(isRed ? Constants.Field.RED_TOP_HIVE : Constants.Field.BLUE_TOP_HIVE);
+        } else {
+            autoTarget(isRed ? Constants.Field.RED_BOTTOM_HIVE : Constants.Field.BLUE_BOTTOM_HIVE);
+        }
+    }
+
     private void updateOdometry() {
         peripherals.updateMouse();
 

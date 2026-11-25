@@ -276,17 +276,14 @@ public class PurepursuitFollower implements Command {
             }
             turn = clip(turn, -MAX_TURN_POWER, MAX_TURN_POWER);
 
-            double cos = Math.cos(currentHeading), sin = Math.sin(currentHeading);
-            double robotX = powerX * cos + powerY * sin;
-            double robotY = -powerX * sin + powerY * cos;
-            double demand = Math.abs(robotX) + Math.abs(robotY) + Math.abs(turn);
+            double demand = Math.abs(powerX) + Math.abs(powerY) + Math.abs(turn);
             if (demand > MAX_WHEEL_POWER) {
                 double scale = MAX_WHEEL_POWER / demand;
-                robotX *= scale;
-                robotY *= scale;
+                powerX *= scale;
+                powerY *= scale;
                 turn *= scale;
             }
-            if (!finite(robotX) || !finite(robotY) || !finite(turn)) {
+            if (!finite(powerX) || !finite(powerY) || !finite(turn)) {
                 throw new IllegalArgumentException("Non-finite controller output");
             }
 
@@ -315,10 +312,10 @@ public class PurepursuitFollower implements Command {
             }
             status = (phase.rotationOnly ? "Turning" : "Following")
                     + " (phase " + (phaseIndex + 1) + "/" + phases.length + ")";
-            lastRobotX = robotX;
-            lastRobotY = robotY;
+            lastRobotX = powerX;
+            lastRobotY = powerY;
             lastTurn = turn;
-            sendRobotPower(robotX, robotY, turn);
+            sendRobotPower(powerX, powerY, turn, currentHeading);
         } catch (Exception e) {
             fail("Execution error: " + e.getMessage());
         }
@@ -429,8 +426,8 @@ public class PurepursuitFollower implements Command {
         havePreviousPose = true;
     }
 
-    private void sendRobotPower(double robotX, double robotY, double ccwPower) {
-        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower);
+    private void sendRobotPower(double robotX, double robotY, double ccwPower, double currentHeading) {
+        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower, currentHeading);
     }
 
     private static void validateSettings() {

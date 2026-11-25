@@ -168,7 +168,7 @@ public class FollowBrainStemPath implements Command {
 
             drive.setMotors(
                     new Vector(-robotY, -robotX),
-                    rotationPower
+                    rotationPower, 0
             );
 
             System.out.println(
