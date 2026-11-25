@@ -4,17 +4,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class Shooter extends Subsystem {
-    DcMotor shooterMotor;
+    DcMotor catapultMotor;
     private ShooterState wantedState = ShooterState.IDLE;
     private ShooterState systemState = ShooterState.IDLE;
-    private Drive drive;
-    public Shooter(String name, Drive drive) {
+    private double target_position = 0.0;
+    public Shooter(String name) {
         super(name);
-        this.drive = drive;
     }
 
     public void setWantedState(ShooterState state) {
@@ -22,7 +20,8 @@ public class Shooter extends Subsystem {
     }
 
     public void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.SHOOTER_NAME);
+        catapultMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.SHOOTER_NAME);
+        catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 
@@ -33,8 +32,18 @@ public class Shooter extends Subsystem {
         MANUAL_SHOOT
     }
 
-    public boolean isAtTargetRPM() {
-        return true;
+    public boolean isAtTargetPosition() {
+        double currentPos = catapultMotor.getCurrentPosition();
+
+        return Constants.withinTolerance(currentPos, Constants.Catapult.CATAPULT_MOTOR_UP, Constants.Catapult.CATAPULT_TOLERANCE);
+    }
+
+    public void runCatapultMotor() {
+        double targetPos = target_position; // In future so I can change here quickly
+        double currentPos = catapultMotor.getCurrentPosition();
+        double result = Constants.Catapult.CATAPULT_TARGET_PID.calculate(currentPos, targetPos);
+
+        catapultMotor.setPower(result);
     }
 
 
@@ -43,17 +52,15 @@ public class Shooter extends Subsystem {
         systemState = wantedState;
 
         switch (systemState) {
-            case DEFAULT:
-                shooterMotor.setPower(0);
-                break;
             case IDLE:
+            case DEFAULT:
+                target_position = Constants.Catapult.CATAPULT_MOTOR_ZERO;
                 break;
             case SHOOT:
-                shooterMotor.setPower(1);
-                break;
-            case MANUAL_SHOOT:
-                shooterMotor.setPower(1);
+                target_position = Constants.Catapult.CATAPULT_MOTOR_UP;
                 break;
         }
+
+        runCatapultMotor();
     }
 }

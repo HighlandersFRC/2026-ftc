@@ -38,16 +38,15 @@ public class Intake extends Subsystem {
         systemState = wantedState;
 
         switch (systemState) {
-            case DEFAULT:
-                intakeMotor.setPower(0);
-                break;
             case IDLE:
+            case DEFAULT:
+                intakeMotor.setPower(Constants.Intake.DEFAULT_SPEED);
                 break;
             case INTAKE:
-                intakeMotor.setPower(1);
+                intakeMotor.setPower(Constants.Intake.INTAKE_SPEED);
                 break;
             case OUTTAKE:
-                intakeMotor.setPower(-1);
+                intakeMotor.setPower(Constants.Intake.OUTTAKE_SPEED);
                 break;
         }
     }

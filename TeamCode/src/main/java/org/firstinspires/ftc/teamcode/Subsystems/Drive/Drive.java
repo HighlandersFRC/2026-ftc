@@ -37,10 +37,10 @@ public class Drive extends Subsystem {
         double x = vector.getI();
         double y = vector.getJ();
 
-        double frontLeft  = y - x - turnValue;
-        double frontRight = -y - x - turnValue;
-        double backLeft   = -y - x + turnValue;
-        double backRight  = -y + x - turnValue;
+        double frontLeft  = -y + x - turnValue;
+        double frontRight = y + x - turnValue;
+        double backLeft   = y + x + turnValue;
+        double backRight  = y - x - turnValue;
 
         double max = Math.max(
                 1.0,

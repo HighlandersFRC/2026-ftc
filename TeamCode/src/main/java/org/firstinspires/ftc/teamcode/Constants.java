@@ -33,13 +33,30 @@ public class Constants {
     }
 
     public static class Physical {
-        public static final double TOP_SPEED = 1;
-        public static final double MAX_ANGULAR_SPEED = -1;
-       // OTOS uses a negative offset for clockwise rotation; this sensor is mounted 90 degrees clockwise from the front of the robot.
+       public static final double TOP_SPEED = 1.0;
+       public static final double MAX_ANGULAR_SPEED = -1.0;
+
        public static final SparkFunOTOS.Pose2D MOUSE_SENSOR_MOUNTED_POSE = new SparkFunOTOS.Pose2D(-0.2159, 0.1016, -90);
        public static final double MOUSE_SENSOR_LINEAR_SCALAR = 1.0;
        public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 1.0;
+
+       public static final double GOBUILDA_MOTOR_TICKS_PER_REV = 28.0;
     }
+
+    public static class Catapult {
+        public static final double CATAPULT_MOTOR_ZERO = 0.0;
+        public static final double CATAPULT_MOTOR_UP = 1.0; // Tune
+        public static final double CATAPULT_TOLERANCE = 10.0; // Tune
+
+        public static final PID CATAPULT_TARGET_PID = new PID(0.0, 0.0, 0.0); // Tune            
+    }
+
+    public static class Intake {
+        public static final double INTAKE_SPEED = 1.0;
+        public static final double OUTTAKE_SPEED = INTAKE_SPEED * -1.0; // This is for tuning just in case the outtake is diff than intake
+        public static final double DEFAULT_SPEED = 0;
+    }
+
 
     public static class Drive {
         public static final double DISTANCE_TOLERANCE = 0.01;
@@ -94,6 +111,10 @@ public class Constants {
 
     private static double inchesToMeters(double inches) {
         return inches / 39.37;
+    }
+
+    public static boolean withinTolerance(double targetPos, double currentPos, double tolerance) {
+        return Math.abs(currentPos - targetPos) <= tolerance;
     }
 
 }

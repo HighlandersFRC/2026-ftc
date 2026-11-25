@@ -10,11 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.Indexer;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
-import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
-import org.firstinspires.ftc.teamcode.Subsystems.Superstructure.Superstates;
 
 @TeleOp
 public class TestDrive extends LinearOpMode {
@@ -31,7 +26,7 @@ public class TestDrive extends LinearOpMode {
             drive.periodic();
 
             // Drive
-            drive.teleopFieldCentric(gamepad1.right_stick_x, -gamepad1.left_stick_x, -gamepad1.left_stick_y);
+            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
 
             boolean optionsPressed = gamepad1.options;
             if (optionsPressed && !optionsWasPressed) peripherals.configureMouseSensor();

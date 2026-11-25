@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.Indexer;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
@@ -23,16 +22,14 @@ public class Robot extends LinearOpMode {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("Limelight");
         Drive drive = new Drive("Drive", peripherals, limelight);
-        Indexer indexer = new Indexer("Indexer");
         Intake intake = new Intake("Intake");
-        Shooter shooter = new Shooter("Shooter", drive);
-        Superstructure superstructure = new Superstructure("System", intake, shooter, indexer, drive);
+        Shooter shooter = new Shooter("Shooter");
+        Superstructure superstructure = new Superstructure("System", intake, shooter, drive);
         superstructure.init(hardwareMap);
 
 
         waitForStart();
 
-        boolean optionsWasPressed = false;
         while(opModeIsActive()) {
             superstructure.periodic();
             superstructure.setWantedState(Superstates.DEFAULT);
@@ -42,14 +39,12 @@ public class Robot extends LinearOpMode {
             // Intake
             if (gamepad1.left_trigger > 0) superstructure.setWantedState(Superstates.INTAKE);
 
-            if (gamepad1.left_bumper) superstructure.setWantedState(Superstates.OUTTAKE);
+            if (gamepad1.left_bumper) superstructure.setWantedState(Superstates.OUTTAKE); // IDK might not wanna keep
 
             // Drive
             drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
 
-            boolean optionsPressed = gamepad1.options;
-            if (optionsPressed && !optionsWasPressed) peripherals.configureMouseSensor();
-            optionsWasPressed = optionsPressed;
+            if (gamepad1.options) peripherals.configureMouseSensor();
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Pose x", peripherals.getPose().getX(DistanceUnit.METER));
