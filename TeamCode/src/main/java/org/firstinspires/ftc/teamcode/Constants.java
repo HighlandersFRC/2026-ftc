@@ -134,4 +134,12 @@ public class Constants {
         return Math.abs(currentPos - targetPos) <= tolerance;
     }
 
+    public static boolean validatePoseWithinTolerance(Pose2D targetPose, Pose2D currentPose, double translationTolerance, double angleTolerance) {
+        boolean validX = withinTolerance(targetPose.getX(DistanceUnit.METER), currentPose.getX(DistanceUnit.METER), translationTolerance);
+        boolean validY = withinTolerance(targetPose.getY(DistanceUnit.METER), currentPose.getY(DistanceUnit.METER), translationTolerance);
+        boolean validHeading = withinTolerance(targetPose.getHeading(AngleUnit.RADIANS), currentPose.getHeading(AngleUnit.RADIANS), angleTolerance);
+
+        return validX && validY && validHeading;
+    }
+
 }

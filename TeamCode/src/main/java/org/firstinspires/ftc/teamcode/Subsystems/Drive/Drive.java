@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems.Drive;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -33,6 +34,11 @@ public class Drive extends Subsystem {
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
         backRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_RIGHT_NAME);
         backLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_LEFT_NAME);
+
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void setMotors(Vector vector, double turnValue, double yawRadians) {
@@ -42,10 +48,10 @@ public class Drive extends Subsystem {
         double x = vector.getI() * cos + vector.getJ() * sin;
         double y = -vector.getI() * sin + vector.getJ() * cos;
 
-        double frontLeft  = -y + x - turnValue;
-        double frontRight = y + x - turnValue;
-        double backLeft   = y + x + turnValue;
-        double backRight  = y - x - turnValue;
+        double frontLeft  = y + x + turnValue;
+        double backLeft   = y - x + turnValue;
+        double frontRight = y - x - turnValue;
+        double backRight  = y + x - turnValue;
 
         double max = Math.max(
                 1.0,
@@ -102,6 +108,19 @@ public class Drive extends Subsystem {
         } else {
             autoTarget(isRed ? Constants.Field.RED_BOTTOM_HIVE : Constants.Field.BLUE_BOTTOM_HIVE);
         }
+    }
+
+    public boolean validateAutoAlign(boolean isRed) {
+        Pose2D currentPose = getPose();
+        Pose2D targetPose;
+
+        if (Constants.Field.TARGET_TOP_HIVE(currentPose)) {
+            targetPose = isRed ? Constants.Field.RED_TOP_HIVE : Constants.Field.BLUE_TOP_HIVE;
+        } else {
+            targetPose = isRed ? Constants.Field.RED_BOTTOM_HIVE : Constants.Field.BLUE_BOTTOM_HIVE;
+        }
+
+        return Constants.validatePoseWithinTolerance(targetPose, currentPose, Constants.Drive.DISTANCE_TOLERANCE, Constants.Drive.ANGLE_TOLERANCE);
     }
 
     private void updateOdometry() {

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 import org.firstinspires.ftc.teamcode.Tools.JSONLoader;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 import org.json.JSONArray;
@@ -37,6 +38,12 @@ import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.TIMEOUT
 import static org.firstinspires.ftc.teamcode.Constants.Drive.PurePursuit.VELOCITY_FILTER_SECONDS;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class PurepursuitFollower implements Command {
 
@@ -48,8 +55,12 @@ public class PurepursuitFollower implements Command {
     
     private final String pathName;
     private final Drive drive;
+    private final Superstructure superstructure;
     private PathPoint[] points;
     private Phase[] phases;
+    private final Map<String, Superstructure.Superstates> stateBindings = new HashMap<>();
+    private List<PathEvent> events = new ArrayList<>();
+    private int nextEventIndex;
     private int phaseIndex;
     private double progress;
     private long startNanos;
@@ -67,21 +78,22 @@ public class PurepursuitFollower implements Command {
     private double crossTrackError, positionError, headingError;
     private double lastRobotX, lastRobotY, lastTurn;
 
-    private static final class Phase {
-        final int start, end;
-        final boolean rotationOnly;
 
-        Phase(int start, int end, boolean rotationOnly) {
-            this.start = start;
-            this.end = end;
-            this.rotationOnly = rotationOnly;
-        }
-    }
 
-    public PurepursuitFollower(String pathName, Drive drive) {
+    public PurepursuitFollower(String pathName, Drive drive, Superstructure superstructure) {
         if (drive == null) throw new IllegalArgumentException("drive is null");
         this.pathName = pathName;
         this.drive = drive;
+        this.superstructure = superstructure;
+    }
+
+    public void eventBindings() {
+        stateBindings.clear();
+        stateBindings.put("shoot", Superstructure.Superstates.SHOOT);
+        stateBindings.put("intake", Superstructure.Superstates.INTAKE);
+        stateBindings.put("idle", Superstructure.Superstates.DEFAULT);
+        stateBindings.put("default", Superstructure.Superstates.DEFAULT);
+        stateBindings.put("outtake", Superstructure.Superstates.OUTTAKE);
     }
 
     public JSONObject loadPath(String name) {
@@ -101,10 +113,12 @@ public class PurepursuitFollower implements Command {
         finished = true;
         successful = false;
         try {
-            JSONArray input = loadPath(pathName).getJSONArray("sampled_points");
+            JSONObject path = loadPath(pathName);
+            JSONArray input = path.getJSONArray("sampled_points");
             if (input.length() == 0) {
                 throw new IllegalArgumentException("sampled_points is empty");
             }
+            loadEvents(path);
             ArrayList<PathPoint> loaded = new ArrayList<>();
             double distance = 0;
             for (int i = 0; i < input.length(); i++) {
@@ -202,6 +216,7 @@ public class PurepursuitFollower implements Command {
             drive.periodic();
             phaseIndex = 0;
             progress = 0;
+            nextEventIndex = 0;
             settleStarted = -1;
             havePreviousPose = false;
             velocityX = velocityY = angularVelocity = 0;
@@ -231,6 +246,7 @@ public class PurepursuitFollower implements Command {
                 fail("Timed out; check pose, motor mapping, path units and gains");
                 return;
             }
+            runDueEvents(elapsed);
             readPose(dt);
             Phase phase = phases[phaseIndex];
             PathPoint end = points[phase.end];
@@ -345,6 +361,37 @@ public class PurepursuitFollower implements Command {
         }
         progress = Math.max(progress, bestProgress);
         crossTrackError = Math.sqrt(bestDistanceSquared);
+    }
+
+    private void loadEvents(JSONObject path) throws Exception {
+        eventBindings();
+        events = new ArrayList<>();
+        JSONArray markers = path.optJSONArray("event_markers");
+        if (markers == null) return;
+
+        for (int i = 0; i < markers.length(); i++) {
+            JSONObject marker = markers.getJSONObject(i);
+            double time = number(marker, "time");
+            if (time < 0) throw new IllegalArgumentException("Event time must be nonnegative");
+            String name = marker.getString("name").trim();
+            if (name.isEmpty()) throw new IllegalArgumentException("Event name is empty");
+            events.add(new PathEvent(time, name));
+        }
+        Collections.sort(events, Comparator.comparingDouble(event -> event.time));
+    }
+
+    private void runDueEvents(double elapsed) {
+        while (nextEventIndex < events.size()
+                && events.get(nextEventIndex).time <= elapsed) {
+            PathEvent event = events.get(nextEventIndex++);
+            Superstructure.Superstates state = stateBindings.get(
+                    event.name.toLowerCase(Locale.US));
+            if (state == null) {
+                System.out.println("PURE PURSUIT: No event binding for '" + event.name + "'");
+            } else if (superstructure != null) {
+                superstructure.setWantedState(state);
+            }
+        }
     }
 
     private PathPoint findLookahead(Phase phase) {
@@ -463,6 +510,16 @@ public class PurepursuitFollower implements Command {
     private static double wrap(double a) { return Math.atan2(Math.sin(a), Math.cos(a)); }
     private static double clip(double v, double lo, double hi) { return Math.max(lo, Math.min(hi, v)); }
     private static double lerp(double a, double b, double t) { return a + (b - a) * t; }
+
+    private static class PathEvent {
+        final double time;
+        final String name;
+
+        PathEvent(double time, String name) {
+            this.time = time;
+            this.name = name;
+        }
+    }
 
     private void stopOutput() {
         lastRobotX = lastRobotY = lastTurn = 0;

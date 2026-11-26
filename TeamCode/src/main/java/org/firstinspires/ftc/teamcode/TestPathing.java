@@ -13,6 +13,9 @@ import org.firstinspires.ftc.teamcode.Commands.Pathing.PurePursuit.PurepursuitFo
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 
 @Autonomous
 public class TestPathing extends LinearOpMode {
@@ -21,11 +24,12 @@ public class TestPathing extends LinearOpMode {
         Peripherals peripherals = new Peripherals("Peripherals");
         Limelight limelight = new Limelight("ll");
         Drive drive = new Drive("drive", peripherals, limelight);
+        Superstructure superstructure = new Superstructure("Superstructure", false, new Intake("Intake"), new Shooter("Shooter"), drive);
         CommandScheduler scheduler = new CommandScheduler();
-        PurepursuitFollower path = new PurepursuitFollower("Leave.polarpath", drive);
+        PurepursuitFollower path = new PurepursuitFollower("OneMeter", drive, superstructure);
 
         try {
-            drive.init(hardwareMap);
+            superstructure.init(hardwareMap);
             boolean loaded = path.prepare();
             telemetry.setMsTransmissionInterval(100);
             while (opModeInInit()) {
@@ -44,7 +48,7 @@ public class TestPathing extends LinearOpMode {
             scheduler.schedule(path);
             long nextTelemetry = 0;
             while (opModeIsActive()) {
-                drive.periodic();
+                superstructure.periodic();
                 scheduler.run();
 
                 long now = System.nanoTime();

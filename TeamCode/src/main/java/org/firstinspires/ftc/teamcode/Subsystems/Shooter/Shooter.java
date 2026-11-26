@@ -29,7 +29,6 @@ public class Shooter extends Subsystem {
         DEFAULT,
         IDLE,
         SHOOT,
-        MANUAL_SHOOT
     }
 
     public boolean isAtTargetPosition() {

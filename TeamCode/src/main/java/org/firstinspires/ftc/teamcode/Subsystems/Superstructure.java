@@ -13,11 +13,14 @@ public class Superstructure extends Subsystem{
     private Superstates wantedState = Superstates.IDLE;
     private Superstates systemState = Superstates.IDLE;
 
-    public Superstructure (String name, Intake intake, Shooter shooter, Drive drive) {
+    private boolean isRed;
+
+    public Superstructure (String name, boolean isRed, Intake intake, Shooter shooter, Drive drive) {
         super(name);
         this.intake = intake;
         this.shooter = shooter;
         this.drive = drive;
+        this.isRed = isRed;
     }
 
     public void init(HardwareMap hardwareMap) {
@@ -36,7 +39,8 @@ public class Superstructure extends Subsystem{
         IDLE,
         INTAKE,
         OUTTAKE,
-        SHOOT
+        SHOOT,
+        MANUAL_SHOOT
     }
 
     @Override
@@ -60,6 +64,12 @@ public class Superstructure extends Subsystem{
                 intake.setWantedState(Intake.IntakeStates.OUTTAKE);
                 break;
             case SHOOT:
+                shooter.setWantedState(Shooter.ShooterState.SHOOT);
+                if (shooter.isAtTargetPosition() && drive.validateAutoAlign(isRed)) {
+                    shooter.setWantedState(Shooter.ShooterState.DEFAULT);
+                }
+                break;
+            case MANUAL_SHOOT:
                 shooter.setWantedState(Shooter.ShooterState.SHOOT);
                 if (shooter.isAtTargetPosition()) {
                     shooter.setWantedState(Shooter.ShooterState.DEFAULT);

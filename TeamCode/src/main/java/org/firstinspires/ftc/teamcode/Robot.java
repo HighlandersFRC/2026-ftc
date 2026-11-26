@@ -24,7 +24,7 @@ public class Robot extends LinearOpMode {
         Drive drive = new Drive("Drive", peripherals, limelight);
         Intake intake = new Intake("Intake");
         Shooter shooter = new Shooter("Shooter");
-        Superstructure superstructure = new Superstructure("System", intake, shooter, drive);
+        Superstructure superstructure = new Superstructure("System", false, intake, shooter, drive);
         superstructure.init(hardwareMap);
 
 
@@ -34,8 +34,12 @@ public class Robot extends LinearOpMode {
             superstructure.periodic();
             superstructure.setWantedState(Superstates.DEFAULT);
             // Shooter
-            if (gamepad1.right_trigger > 0) superstructure.setWantedState(Superstates.SHOOT);
+            if (gamepad1.right_trigger > 0) {
+                superstructure.setWantedState(Superstates.SHOOT);
+                drive.autoAlign(false); // False for blue true for red
+            }
 
+            if (gamepad1.right_bumper) superstructure.setWantedState(Superstates.MANUAL_SHOOT);
             // Intake
             if (gamepad1.left_trigger > 0) superstructure.setWantedState(Superstates.INTAKE);
 
