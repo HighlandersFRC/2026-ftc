@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveIO;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 
 @TeleOp
@@ -16,7 +17,9 @@ public class TestDrive extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         LimelightHelpers limelight = new LimelightHelpers("Limelight");
-        Drive drive = new Drive("Drive", peripherals, limelight);
+
+        DriveIO driveIO = new DriveIO("Drive");
+        Drive drive = new Drive("drive", driveIO, peripherals, limelight);
         drive.init(hardwareMap);
 
         waitForStart();

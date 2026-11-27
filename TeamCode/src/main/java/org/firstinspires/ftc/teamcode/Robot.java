@@ -8,9 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveIO;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeIO;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterIO;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstate;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 
@@ -20,9 +23,15 @@ public class Robot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         LimelightHelpers limelight = new LimelightHelpers("Limelight");
-        Drive drive = new Drive("Drive", peripherals, limelight);
-        Intake intake = new Intake("Intake");
-        Shooter shooter = new Shooter("Shooter");
+
+        DriveIO driveIO = new DriveIO("Drive");
+        Drive drive = new Drive("drive", driveIO, peripherals, limelight);
+
+        IntakeIO intakeIO = new IntakeIO("Intake");
+        Intake intake = new Intake("intake", intakeIO);
+
+        ShooterIO shooterIO = new ShooterIO("Shooter");
+        Shooter shooter = new Shooter("shooter", shooterIO);
         Superstructure superstructure = new Superstructure("System", false, intake, shooter, drive);
         superstructure.init(hardwareMap);
 

@@ -8,6 +8,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveIO;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeIO;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterIO;
 import org.firstinspires.ftc.teamcode.Tools.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Pathing.PurePursuit.PurepursuitFollower;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
@@ -22,8 +25,8 @@ public class TestPathing extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         LimelightHelpers limelight = new LimelightHelpers("ll");
-        Drive drive = new Drive("drive", peripherals, limelight);
-        Superstructure superstructure = new Superstructure("Superstructure", false, new Intake("Intake"), new Shooter("Shooter"), drive);
+        Drive drive = new Drive("drive", new DriveIO("Drive"), peripherals, limelight);
+        Superstructure superstructure = new Superstructure("Superstructure", false, new Intake("intake", new IntakeIO("Intake")), new Shooter("shooter", new ShooterIO("Shooter")), drive);
         CommandScheduler scheduler = new CommandScheduler();
         PurepursuitFollower path = new PurepursuitFollower("OneMeter", drive, superstructure);
 

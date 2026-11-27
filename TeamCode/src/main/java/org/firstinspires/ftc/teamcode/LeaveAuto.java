@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveIO;
 import org.firstinspires.ftc.teamcode.Tools.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Pathing.CommandDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
@@ -19,7 +20,9 @@ public class LeaveAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
         LimelightHelpers limelight = new LimelightHelpers("ll");
-        Drive drive = new Drive("drive", peripherals, limelight);
+
+        DriveIO driveIO = new DriveIO("Drive");
+        Drive drive = new Drive("drive", driveIO, peripherals, limelight);
         CommandScheduler scheduler = new CommandScheduler();
 
         drive.init(hardwareMap);
