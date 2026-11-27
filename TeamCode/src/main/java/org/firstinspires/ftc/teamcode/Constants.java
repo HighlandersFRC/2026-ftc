@@ -69,9 +69,9 @@ public class Constants {
     }
 
     public static class Intake {
-        public static final double INTAKE_SPEED = 1.0;
+        public static final double INTAKE_SPEED = 100.0;
         public static final double OUTTAKE_SPEED = INTAKE_SPEED * -1.0; // This is for tuning just in case the outtake is diff than intake
-        public static final double DEFAULT_SPEED = 0;
+        public static final double DEFAULT_SPEED = 0.0;
     }
 
 

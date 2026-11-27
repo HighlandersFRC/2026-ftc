@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Tools.JSONLoader;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 import org.json.JSONArray;
@@ -277,7 +277,7 @@ public class Follower implements Command {
     }
 
     private void sendRobotPower(double robotX, double robotY, double ccwPower, double currentYaw) {
-        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower, currentYaw);
+        drive.followTrajectory(new Vector(-robotY, -robotX), -ccwPower, currentYaw);
     }
 
     private void updateVelocity(double dt) {
@@ -345,7 +345,7 @@ public class Follower implements Command {
     }
 
     @Override public boolean isFinished() { return finished; }
-    @Override public Subsystem getRequiredSubsystem() { return drive; }
+    @Override public SubsystemBase getRequiredSubsystem() { return drive; }
 
     public boolean isSuccessful() { return successful; }
     public String getStatus() { return status; }

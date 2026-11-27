@@ -8,19 +8,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Superstate;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
-import org.firstinspires.ftc.teamcode.Subsystems.Superstructure.Superstates;
 
 @TeleOp
 public class Robot extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
-        Limelight limelight = new Limelight("Limelight");
+        LimelightHelpers limelight = new LimelightHelpers("Limelight");
         Drive drive = new Drive("Drive", peripherals, limelight);
         Intake intake = new Intake("Intake");
         Shooter shooter = new Shooter("Shooter");
@@ -32,21 +31,24 @@ public class Robot extends LinearOpMode {
 
         while(opModeIsActive()) {
             superstructure.periodic();
-            superstructure.setWantedState(Superstates.DEFAULT);
             // Shooter
             if (gamepad1.right_trigger > 0) {
-                superstructure.setWantedState(Superstates.SHOOT);
                 drive.autoAlign(false); // False for blue true for red
+                superstructure.setWantedState(Superstate.SHOOT);
+            } else {
+                superstructure.setWantedState(Superstate.DEFAULT);
             }
 
-            if (gamepad1.right_bumper) superstructure.setWantedState(Superstates.MANUAL_SHOOT);
+            if (gamepad1.right_bumper) superstructure.setWantedState(Superstate.MANUAL_SHOOT);
             // Intake
-            if (gamepad1.left_trigger > 0) superstructure.setWantedState(Superstates.INTAKE);
-
-            if (gamepad1.left_bumper) superstructure.setWantedState(Superstates.OUTTAKE); // IDK might not wanna keep
+            if (gamepad1.left_trigger > 0) {
+                superstructure.setWantedState(Superstate.INTAKE);
+            } else {
+                superstructure.setWantedState(Superstate.DEFAULT);
+            }
 
             // Drive
-            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
+            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y, true);
 
             if (gamepad1.options) peripherals.configureMouseSensor();
 

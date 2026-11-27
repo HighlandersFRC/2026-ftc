@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Tools.JSONLoader;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
@@ -166,7 +166,7 @@ public class FollowBrainStemPath implements Command {
             robotX = clamp(robotX);
             robotY = clamp(robotY);
 
-            drive.setMotors(
+            drive.followTrajectory(
                     new Vector(-robotY, -robotX),
                     rotationPower, 0
             );
@@ -209,7 +209,7 @@ public class FollowBrainStemPath implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public SubsystemBase getRequiredSubsystem() {
         return drive;
     }
 }

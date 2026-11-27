@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-public abstract class Subsystem {
+public abstract class SubsystemBase {
     private String name;
 
-    public Subsystem(String name) {
+    public SubsystemBase(String name) {
         this.name = name;
     }
 

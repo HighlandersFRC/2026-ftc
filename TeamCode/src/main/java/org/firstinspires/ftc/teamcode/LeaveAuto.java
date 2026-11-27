@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Pathing.CommandDrive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 
 @Autonomous
@@ -19,7 +18,7 @@ public class LeaveAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
-        Limelight limelight = new Limelight("ll");
+        LimelightHelpers limelight = new LimelightHelpers("ll");
         Drive drive = new Drive("drive", peripherals, limelight);
         CommandScheduler scheduler = new CommandScheduler();
 

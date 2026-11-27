@@ -3,15 +3,18 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveState;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 
-public class Superstructure extends Subsystem{
+public class Superstructure extends SubsystemBase {
     private final Intake intake;
     private final Shooter shooter;
     private final Drive drive;
-    private Superstates wantedState = Superstates.IDLE;
-    private Superstates systemState = Superstates.IDLE;
+    private Superstate wantedState = Superstate.IDLE;
+    private Superstate systemState = Superstate.IDLE;
 
     private boolean isRed;
 
@@ -29,19 +32,11 @@ public class Superstructure extends Subsystem{
         drive.init(hardwareMap);
     }
 
-    public void setWantedState(Superstates state) {
+    public void setWantedState(Superstate state) {
         wantedState = state;
     }
 
 
-    public enum Superstates {
-        DEFAULT,
-        IDLE,
-        INTAKE,
-        OUTTAKE,
-        SHOOT,
-        MANUAL_SHOOT
-    }
 
     @Override
     public void periodic() {
@@ -52,27 +47,34 @@ public class Superstructure extends Subsystem{
         shooter.periodic();
         switch (systemState) {
             case DEFAULT:
-                intake.setWantedState(Intake.IntakeStates.DEFAULT);
+                intake.setWantedState(IntakeState.DEFAULT);
+                drive.setWantedState(DriveState.DEFAULT);
                 break;
             case IDLE:
-                intake.setWantedState(Intake.IntakeStates.IDLE);
+                intake.setWantedState(IntakeState.IDLE);
+                drive.setWantedState(DriveState.DEFAULT);
                 break;
             case INTAKE:
-                intake.setWantedState(Intake.IntakeStates.INTAKE);
+                intake.setWantedState(IntakeState.INTAKE);
+                drive.setWantedState(DriveState.DEFAULT);
                 break;
             case OUTTAKE:
-                intake.setWantedState(Intake.IntakeStates.OUTTAKE);
+                intake.setWantedState(IntakeState.OUTTAKE);
+                drive.setWantedState(DriveState.DEFAULT);
                 break;
             case SHOOT:
-                shooter.setWantedState(Shooter.ShooterState.SHOOT);
+                shooter.setWantedState(ShooterState.SHOOT);
+                drive.setWantedState(DriveState.ALIGNING);
                 if (shooter.isAtTargetPosition() && drive.validateAutoAlign(isRed)) {
-                    shooter.setWantedState(Shooter.ShooterState.DEFAULT);
+                    shooter.setWantedState(ShooterState.DEFAULT);
+                    drive.setWantedState(DriveState.DEFAULT);
                 }
                 break;
             case MANUAL_SHOOT:
-                shooter.setWantedState(Shooter.ShooterState.SHOOT);
+                shooter.setWantedState(ShooterState.SHOOT);
+                drive.setWantedState(DriveState.DEFAULT);
                 if (shooter.isAtTargetPosition()) {
-                    shooter.setWantedState(Shooter.ShooterState.DEFAULT);
+                    shooter.setWantedState(ShooterState.DEFAULT);
                 }
                 break;
         }

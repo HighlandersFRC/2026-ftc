@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems.Drive;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -7,13 +7,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 
-public class Limelight extends Subsystem {
+public class LimelightHelpers extends SubsystemBase {
     Limelight3A limelightTagDetection;
     Limelight3A limelightObjectDetection;
-    public Limelight(String name) {
+    public LimelightHelpers(String name) {
         super(name);
     }
 

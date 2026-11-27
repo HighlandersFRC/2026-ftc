@@ -11,7 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Pathing.PurePursuit.PurepursuitFollower;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
@@ -22,7 +21,7 @@ public class TestPathing extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
-        Limelight limelight = new Limelight("ll");
+        LimelightHelpers limelight = new LimelightHelpers("ll");
         Drive drive = new Drive("drive", peripherals, limelight);
         Superstructure superstructure = new Superstructure("Superstructure", false, new Intake("Intake"), new Shooter("Shooter"), drive);
         CommandScheduler scheduler = new CommandScheduler();

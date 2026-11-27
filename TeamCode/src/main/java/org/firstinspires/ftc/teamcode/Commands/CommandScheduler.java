@@ -4,13 +4,13 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.qualcomm.robotcore.util.RobotLog;
 import java.util.*;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 
 
 public class CommandScheduler {
     private static CommandScheduler instance;
     private final List<Command> scheduledCommands = new ArrayList<>();
-    private final Map<Subsystem, Command> activeSubsystemCommands = new HashMap<>();
+    private final Map<SubsystemBase, Command> activeSubsystemCommands = new HashMap<>();
 
     public CommandScheduler() {
 
@@ -26,7 +26,7 @@ public class CommandScheduler {
 
 
     public void schedule(Command command) {
-        Subsystem requiredSubsystem = command.getRequiredSubsystem();
+        SubsystemBase requiredSubsystem = command.getRequiredSubsystem();
 
         if (requiredSubsystem != null) {
             Command activeCommand = activeSubsystemCommands.get(requiredSubsystem);
@@ -46,7 +46,7 @@ public class CommandScheduler {
             RobotLog.d("Command Scheduled: " + command.getClass().getSimpleName());
         }
     }
-    public boolean isSubsystemBusy(Subsystem subsystem) {
+    public boolean isSubsystemBusy(SubsystemBase subsystem) {
         return activeSubsystemCommands.containsKey(subsystem);
     }
 
@@ -60,7 +60,7 @@ public class CommandScheduler {
                 finishedCommands.add(command);
                 RobotLog.d("Command Finished and Ended: " + command.getClass().getSimpleName());
 
-                Subsystem subsystem = command.getRequiredSubsystem();
+                SubsystemBase subsystem = command.getRequiredSubsystem();
                 if (subsystem != null) {
                     activeSubsystemCommands.remove(subsystem);
 
@@ -79,7 +79,7 @@ public class CommandScheduler {
 
     public void printCurrentCommands() {
         RobotLog.d("===== Current Commands =====");
-        for (Map.Entry<Subsystem, Command> entry : activeSubsystemCommands.entrySet()) {
+        for (Map.Entry<SubsystemBase, Command> entry : activeSubsystemCommands.entrySet()) {
             RobotLog.d("Subsystem: " + entry.getKey().getClass().getSimpleName() +
                     ", Command: " + entry.getValue().getClass().getSimpleName());
         }
@@ -87,7 +87,7 @@ public class CommandScheduler {
     }
 
     private void cancel(Command command) {
-        Subsystem requiredSubsystem = command.getRequiredSubsystem();
+        SubsystemBase requiredSubsystem = command.getRequiredSubsystem();
         if (requiredSubsystem != null) {
             activeSubsystemCommands.remove(requiredSubsystem);
         }
@@ -100,7 +100,7 @@ public class CommandScheduler {
 
 
     public boolean isCommandScheduled(Command command) {
-        Subsystem subsystem = command.getRequiredSubsystem();
+        SubsystemBase subsystem = command.getRequiredSubsystem();
         return subsystem != null && activeSubsystemCommands.get(subsystem) == command;
     }
 

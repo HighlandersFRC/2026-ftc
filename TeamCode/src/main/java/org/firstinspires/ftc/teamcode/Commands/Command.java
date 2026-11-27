@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 
 public interface Command {
 
@@ -12,7 +12,7 @@ public interface Command {
 
     boolean isFinished();
 
-    Subsystem getRequiredSubsystem();
+    SubsystemBase getRequiredSubsystem();
 
 
 }

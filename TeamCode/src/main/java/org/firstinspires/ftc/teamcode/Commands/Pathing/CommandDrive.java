@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
 public class CommandDrive implements Command {
@@ -23,7 +23,7 @@ public class CommandDrive implements Command {
     }
     @Override
     public void start() {
-        drive.setMotors(new Vector(x, y), turnValue, Math.toRadians(peripherals.getYaw()));
+        drive.followTrajectory(new Vector(x, y), turnValue, Math.toRadians(peripherals.getYaw()));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class CommandDrive implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public SubsystemBase getRequiredSubsystem() {
         return drive;
     }
 }

@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Limelight;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 
 @TeleOp
@@ -16,7 +15,7 @@ public class TestDrive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Peripherals peripherals = new Peripherals("Peripherals");
-        Limelight limelight = new Limelight("Limelight");
+        LimelightHelpers limelight = new LimelightHelpers("Limelight");
         Drive drive = new Drive("Drive", peripherals, limelight);
         drive.init(hardwareMap);
 
@@ -26,7 +25,7 @@ public class TestDrive extends LinearOpMode {
             drive.periodic();
 
             // Drive
-            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
+            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y, true);
 
             boolean optionsPressed = gamepad1.options;
             if (optionsPressed && !optionsWasPressed) peripherals.configureMouseSensor();

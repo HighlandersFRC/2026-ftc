@@ -7,7 +7,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+import org.firstinspires.ftc.teamcode.Subsystems.Superstate;
 import org.firstinspires.ftc.teamcode.Subsystems.Superstructure;
 import org.firstinspires.ftc.teamcode.Tools.JSONLoader;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
@@ -58,7 +59,7 @@ public class PurepursuitFollower implements Command {
     private final Superstructure superstructure;
     private PathPoint[] points;
     private Phase[] phases;
-    private final Map<String, Superstructure.Superstates> stateBindings = new HashMap<>();
+    private final Map<String, Superstate> stateBindings = new HashMap<>();
     private List<PathEvent> events = new ArrayList<>();
     private int nextEventIndex;
     private int phaseIndex;
@@ -89,11 +90,11 @@ public class PurepursuitFollower implements Command {
 
     public void eventBindings() {
         stateBindings.clear();
-        stateBindings.put("shoot", Superstructure.Superstates.SHOOT);
-        stateBindings.put("intake", Superstructure.Superstates.INTAKE);
-        stateBindings.put("idle", Superstructure.Superstates.DEFAULT);
-        stateBindings.put("default", Superstructure.Superstates.DEFAULT);
-        stateBindings.put("outtake", Superstructure.Superstates.OUTTAKE);
+        stateBindings.put("shoot", Superstate.SHOOT);
+        stateBindings.put("intake", Superstate.INTAKE);
+        stateBindings.put("idle", Superstate.DEFAULT);
+        stateBindings.put("default", Superstate.DEFAULT);
+        stateBindings.put("outtake", Superstate.OUTTAKE);
     }
 
     public JSONObject loadPath(String name) {
@@ -384,7 +385,7 @@ public class PurepursuitFollower implements Command {
         while (nextEventIndex < events.size()
                 && events.get(nextEventIndex).time <= elapsed) {
             PathEvent event = events.get(nextEventIndex++);
-            Superstructure.Superstates state = stateBindings.get(
+            Superstate state = stateBindings.get(
                     event.name.toLowerCase(Locale.US));
             if (state == null) {
                 System.out.println("PURE PURSUIT: No event binding for '" + event.name + "'");
@@ -474,7 +475,7 @@ public class PurepursuitFollower implements Command {
     }
 
     private void sendRobotPower(double robotX, double robotY, double ccwPower, double currentHeading) {
-        drive.setMotors(new Vector(-robotY, -robotX), -ccwPower, currentHeading);
+        drive.followTrajectory(new Vector(-robotY, -robotX), -ccwPower, currentHeading);
     }
 
     private static void validateSettings() {
@@ -542,7 +543,7 @@ public class PurepursuitFollower implements Command {
     }
 
     @Override public boolean isFinished() { return finished; }
-    @Override public Subsystem getRequiredSubsystem() { return drive; }
+    @Override public SubsystemBase getRequiredSubsystem() { return drive; }
     public boolean isSuccessful() { return successful; }
     public String getStatus() { return status; }
     public double getProgressMeters() { return progress; }

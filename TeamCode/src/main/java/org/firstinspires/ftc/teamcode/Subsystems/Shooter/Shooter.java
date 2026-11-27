@@ -4,15 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
 
-public class Shooter extends Subsystem {
-    DcMotor catapultMotor;
+public class Shooter extends SubsystemBase {
+
+    ShooterIO io;
     private ShooterState wantedState = ShooterState.IDLE;
     private ShooterState systemState = ShooterState.IDLE;
     private double target_position = 0.0;
-    public Shooter(String name) {
+    public Shooter(String name, ShooterIO shooterIO) {
         super(name);
+        io = shooterIO;
     }
 
     public void setWantedState(ShooterState state) {
@@ -20,31 +22,13 @@ public class Shooter extends Subsystem {
     }
 
     public void init(HardwareMap hardwareMap) {
-        catapultMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.SHOOTER_NAME);
-        catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+     io.init(hardwareMap);
     }
-
-
-    public enum ShooterState {
-        DEFAULT,
-        IDLE,
-        SHOOT,
-    }
-
     public boolean isAtTargetPosition() {
-        double currentPos = catapultMotor.getCurrentPosition();
+        double currentPos = io.getCurrentPosition();
 
         return Constants.withinTolerance(currentPos, Constants.Catapult.CATAPULT_MOTOR_UP, Constants.Catapult.CATAPULT_TOLERANCE);
     }
-
-    public void runCatapultMotor() {
-        double targetPos = target_position; // In future so I can change here quickly
-        double currentPos = catapultMotor.getCurrentPosition();
-        double result = Constants.Catapult.CATAPULT_TARGET_PID.calculate(currentPos, targetPos);
-
-        catapultMotor.setPower(result);
-    }
-
 
     @Override
     public void periodic() {
@@ -60,6 +44,6 @@ public class Shooter extends Subsystem {
                 break;
         }
 
-        runCatapultMotor();
+        io.runCatapultMotor(target_position);
     }
 }
