@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Tools.SubsystemBase;
 
 public class Superstructure extends SubsystemBase {
     private final Intake intake;

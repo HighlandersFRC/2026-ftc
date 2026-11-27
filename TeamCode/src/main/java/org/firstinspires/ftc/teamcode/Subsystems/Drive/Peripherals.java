@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+import org.firstinspires.ftc.teamcode.Tools.SubsystemBase;
 
 public class Peripherals extends SubsystemBase {
     private double fieldX;

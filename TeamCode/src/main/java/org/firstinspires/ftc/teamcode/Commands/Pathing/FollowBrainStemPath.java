@@ -6,10 +6,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.Commands.Command;
+import org.firstinspires.ftc.teamcode.Tools.Command;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+import org.firstinspires.ftc.teamcode.Tools.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Tools.JSONLoader;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 

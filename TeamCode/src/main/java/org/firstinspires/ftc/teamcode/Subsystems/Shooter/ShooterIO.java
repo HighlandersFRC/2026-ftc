@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+import org.firstinspires.ftc.teamcode.Tools.SubsystemBase;
 
 public class ShooterIO extends SubsystemBase {
     DcMotor catapultMotor;

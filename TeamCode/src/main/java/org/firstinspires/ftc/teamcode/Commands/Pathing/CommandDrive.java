@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.Commands.Pathing;
 
 
-import org.firstinspires.ftc.teamcode.Commands.Command;
+import org.firstinspires.ftc.teamcode.Tools.Command;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+import org.firstinspires.ftc.teamcode.Tools.SubsystemBase;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
 public class CommandDrive implements Command {

@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.Commands;
-
-import org.firstinspires.ftc.teamcode.Subsystems.SubsystemBase;
+package org.firstinspires.ftc.teamcode.Tools;
 
 public interface Command {
 
